@@ -844,10 +844,11 @@ body::before {
 }
 
 /* absolute timeline connector track line */
+/* The line is anchored 1.5rem from .timeline-right's left edge
+   (the center of its 3rem padding area). */
 .timeline-track-line {
   position: absolute;
   left: 1.5rem;
-  transform: translateX(-50%);
   top: 1rem;
   bottom: 1rem;
   width: 1px;
@@ -862,9 +863,13 @@ body::before {
   flex-direction: column;
 }
 
+/* .step-marker is absolute inside .timeline-step.
+   .timeline-step's left edge is at 3rem (due to padding-left on .timeline-right).
+   To place the dot centre at 1.5rem from .timeline-right:
+       1.5rem - 3rem = -1.5rem  → then transform centres the dot on that point. */
 .step-marker {
   position: absolute;
-  left: 1.5rem;
+  left: -1.5rem;
   transform: translateX(-50%);
   top: 0.2rem;
   display: flex;
@@ -2578,12 +2583,16 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
     gap: 3.5rem;
   }
 
+  /* Mobile: padding-left on .timeline-right is 2rem,
+     so track line center = 1rem from .timeline-right.
+     step-marker: 1rem - 2rem = -1rem from .timeline-step. */
   .timeline-track-line {
     left: 1rem;
   }
 
   .step-marker {
-    left: 1rem;
+    left: -1rem;
+    transform: translateX(-50%);
     top: 0.15rem;
   }
 
