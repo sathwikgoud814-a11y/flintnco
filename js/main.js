@@ -159,12 +159,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentX = 0;
     let currentY = 0;
 
+    const visualGlow = document.querySelector('.visual-glow');
+
     hero.addEventListener('mousemove', (e) => {
       const rect = hero.getBoundingClientRect();
       const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
       const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-      mouseX = x * 10;
-      mouseY = y * 10;
+      mouseX = x * 8;
+      mouseY = y * 8;
     });
 
     hero.addEventListener('mouseleave', () => {
@@ -173,11 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const animateParallax = () => {
-      currentX += (mouseX - currentX) * 0.08;
-      currentY += (mouseY - currentY) * 0.08;
-      const rotateY = currentX * 0.25;
-      const rotateX = -currentY * 0.25;
+      currentX += (mouseX - currentX) * 0.045;
+      currentY += (mouseY - currentY) * 0.045;
+      const rotateY = currentX * 0.18;
+      const rotateX = -currentY * 0.18;
       browser.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      if (visualGlow) {
+        visualGlow.style.transform = `translate(-50%, -50%) translate3d(${currentX * 0.6}px, ${currentY * 0.6}px, 0)`;
+      }
       requestAnimationFrame(animateParallax);
     };
 
@@ -200,19 +205,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroTl = gsap.timeline({
       scrollTrigger: {
         trigger: '#hero',
-        start: 'top 80%',
+        start: 'top 85%',
         toggleActions: 'play reverse play reverse'
       }
     });
 
-    heroTl.fromTo(['.hero-headline', '.hero-paragraph', '.hero-btn-group'],
+    heroTl.fromTo('.hero-headline',
       { opacity: 0, y: 35 },
-      { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'power4.out' }
+      { opacity: 1, y: 0, duration: 1.0, ease: 'power4.out' }
+    ).fromTo('.hero-headline em',
+      { opacity: 0, y: 15 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' },
+      '-=0.7'
+    ).fromTo('.hero-paragraph',
+      { opacity: 0, y: 25 },
+      { opacity: 1, y: 0, duration: 0.85, ease: 'power4.out' },
+      '-=0.6'
+    ).fromTo('.btn-primary',
+      { opacity: 0, scale: 0.96, y: 20 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.75, ease: 'power4.out' },
+      '-=0.5'
+    ).fromTo('.btn-secondary',
+      { opacity: 0, scale: 0.96, y: 20 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.75, ease: 'power4.out' },
+      '-=0.62'
     ).fromTo('#parallax-browser',
       { opacity: 0, y: 40 },
       { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out' },
-      '-=0.6'
+      '-=0.7'
+    ).fromTo('.hero-scroll-indicator',
+      { opacity: 0, y: 15 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' },
+      '-=0.4'
     );
+
 
     // B. TRUST TICKER SECTION REVEAL
     const trustElements = gsap.utils.toArray('.trust-item, .trust-label');
