@@ -1,7 +1,64 @@
-﻿import './scroll-story.js';
+import Lenis from 'lenis';
+import './scroll-story.js';
+
+/**
+ * Flint Co. Senior Motion System (GSAP + ScrollTrigger + Lenis)
+ * 
+ * DESIGN PRINCIPLES:
+ * 1. Handcrafted, restrained editorial feel (Never generic or flashy).
+ * 2. 60 FPS smooth scrolling powered by Lenis driving GSAP ScrollTrigger ticker.
+ * 3. Bidirectional reveals (`toggleActions: "play reverse play reverse"`):
+ *    Elements animate smoothly on scroll down and reverse cleanly when scrolling back up.
+ * 4. Precise Y-translations (20-40px), opacity fades (0 -> 1), and `power4.out` / `expo.out` easings.
+ * 5. Full support for `prefers-reduced-motion`.
+ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Dynamic Adaptive Navigation Bar (Light Paper State & Dark CTA Transition)
+  // -------------------------------------------------------------
+  // 0. Prefers-Reduced-Motion Check
+  // -------------------------------------------------------------
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // -------------------------------------------------------------
+  // 1. Lenis Smooth Scroll Engine + GSAP Ticker Synchronization
+  // -------------------------------------------------------------
+  let lenis = null;
+
+  if (!prefersReducedMotion) {
+    lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1.0,
+      smoothTouch: false,
+      touchMultiplier: 1.5,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Connect Lenis scroll updates to GSAP ScrollTrigger
+      lenis.on('scroll', ScrollTrigger.update);
+
+      // Synchronize GSAP high-precision ticker with Lenis RAF
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+    }
+  }
+
+  // -------------------------------------------------------------
+  // 2. Navigation Bar (Adaptive Dark / Light Intersection Observer)
+  // -------------------------------------------------------------
   const header = document.getElementById('header');
   const ctaSection = document.getElementById('inquire');
   
@@ -16,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', handleScroll);
   handleScroll();
 
-  // IntersectionObserver: Toggles .navbar-dark smoothly when 45% of CTA section enters/leaves viewport
   if (ctaSection && header && 'IntersectionObserver' in window) {
     const navObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -26,14 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
           header.classList.remove('navbar-dark');
         }
       });
-    }, {
-      threshold: 0.45
-    });
+    }, { threshold: 0.45 });
 
     navObserver.observe(ctaSection);
   }
 
-  // 2. Mobile Navigation Toggle
+  // Mobile Navigation Drawer Toggle
   const mobileToggle = document.getElementById('mobile-toggle');
   const mobileMenu = document.getElementById('mobile-menu');
   const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
@@ -44,8 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileMenu.classList.toggle('active');
       if (mobileMenu.classList.contains('active')) {
         document.body.style.overflow = 'hidden';
+        if (lenis) lenis.stop();
       } else {
         document.body.style.overflow = '';
+        if (lenis) lenis.start();
       }
     };
 
@@ -56,15 +112,16 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileToggle.classList.remove('active');
         mobileMenu.classList.remove('active');
         document.body.style.overflow = '';
+        if (lenis) lenis.start();
       });
     });
   }
 
-  // 3. Floating Mockup 3D Mouse Parallax (Apple/Linear spring effect)
+  // 3D Parallax Mouse Spring Effect on Hero Browser
   const hero = document.getElementById('hero');
   const browser = document.getElementById('parallax-browser');
 
-  if (hero && browser) {
+  if (hero && browser && !prefersReducedMotion) {
     let mouseX = 0;
     let mouseY = 0;
     let currentX = 0;
@@ -74,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const rect = hero.getBoundingClientRect();
       const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
       const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-      mouseX = x * 12;
-      mouseY = y * 12;
+      mouseX = x * 10;
+      mouseY = y * 10;
     });
 
     hero.addEventListener('mouseleave', () => {
@@ -83,41 +140,300 @@ document.addEventListener('DOMContentLoaded', () => {
       mouseY = 0;
     });
 
-    const animate = () => {
+    const animateParallax = () => {
       currentX += (mouseX - currentX) * 0.08;
       currentY += (mouseY - currentY) * 0.08;
       const rotateY = currentX * 0.25;
       const rotateX = -currentY * 0.25;
       browser.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      requestAnimationFrame(animate);
+      requestAnimationFrame(animateParallax);
     };
 
-    animate();
+    animateParallax();
   }
 
-  // 4. Scroll Reveal Intersection Observer
-  const revealElements = document.querySelectorAll('.reveal');
+  // -------------------------------------------------------------
+  // 3. GSAP Section-by-Section Handcrafted Reveal Motion System
+  // -------------------------------------------------------------
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
 
-  if ('IntersectionObserver' in window && revealElements.length > 0) {
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      root: null,
-      threshold: 0.15,
-      rootMargin: '0px 0px -50px 0px'
+    if (prefersReducedMotion) {
+      // Bypasses all motion timelines for users requesting reduced motion
+      gsap.globalTimeline.timeScale(100);
+      return;
+    }
+
+    // A. HERO SECTION REVEAL
+    const heroTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top 80%',
+        toggleActions: 'play reverse play reverse'
+      }
     });
 
-    revealElements.forEach(el => revealObserver.observe(el));
-  } else {
-    revealElements.forEach(el => el.classList.add('revealed'));
+    heroTl.fromTo(['.hero-headline', '.hero-paragraph', '.hero-btn-group'],
+      { opacity: 0, y: 35 },
+      { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'power4.out' }
+    ).fromTo('#parallax-browser',
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out' },
+      '-=0.6'
+    );
+
+    // B. TRUST TICKER SECTION REVEAL
+    const trustElements = gsap.utils.toArray('.trust-item, .trust-label');
+    if (trustElements.length > 0) {
+      gsap.fromTo(trustElements,
+        { opacity: 0, y: 25 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.06,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: '.trust-section',
+            start: 'top 85%',
+            toggleActions: 'play reverse play reverse'
+          }
+        }
+      );
+    }
+
+    // C. PROCESS / TIMELINE SECTION REVEAL
+    const timelineSteps = gsap.utils.toArray('.timeline-step');
+    if (timelineSteps.length > 0) {
+      gsap.fromTo(['.timeline-left', ...timelineSteps],
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          stagger: 0.12,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: '#process',
+            start: 'top 80%',
+            toggleActions: 'play reverse play reverse'
+          }
+        }
+      );
+    }
+
+    // D. CASE STUDY SECTION REVEAL
+    const caseSection = document.getElementById('work');
+    if (caseSection) {
+      const caseTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: caseSection,
+          start: 'top 80%',
+          toggleActions: 'play reverse play reverse'
+        }
+      });
+
+      caseTl.fromTo(['.case-header', '.case-story-nav', '.case-visual-wrapper'],
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'expo.out' }
+      );
+
+      const narrativeCols = gsap.utils.toArray('.narrative-col');
+      if (narrativeCols.length > 0) {
+        gsap.fromTo(narrativeCols,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.08,
+            ease: 'power4.out',
+            scrollTrigger: {
+              trigger: '.case-narrative-grid',
+              start: 'top 85%',
+              toggleActions: 'play reverse play reverse'
+            }
+          }
+        );
+      }
+    }
+
+    // E. SERVICES SECTION REVEAL
+    const serviceCards = gsap.utils.toArray('.service-card');
+    if (serviceCards.length > 0) {
+      const serviceTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#services',
+          start: 'top 80%',
+          toggleActions: 'play reverse play reverse'
+        }
+      });
+
+      serviceTl.fromTo('.services-header',
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' }
+      ).fromTo(serviceCards,
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.85, stagger: 0.1, ease: 'power4.out' },
+        '-=0.4'
+      );
+    }
+
+    // F. PHILOSOPHY / VALUE PROP SECTION REVEAL
+    const valpropRows = gsap.utils.toArray('.valprop-row');
+    if (valpropRows.length > 0) {
+      const valpropTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#philosophy',
+          start: 'top 80%',
+          toggleActions: 'play reverse play reverse'
+        }
+      });
+
+      valpropTl.fromTo('.valprop-header',
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' }
+      ).fromTo(valpropRows,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.85, stagger: 0.12, ease: 'power4.out' },
+        '-=0.4'
+      );
+    }
+
+    // G. TESTIMONIALS & BEFORE/AFTER SHOWCASE REVEAL
+    const testimonialsSection = document.querySelector('.testimonials-section');
+    if (testimonialsSection) {
+      const testTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: testimonialsSection,
+          start: 'top 80%',
+          toggleActions: 'play reverse play reverse'
+        }
+      });
+
+      testTl.fromTo(['.testimonials-header', '.ba-showcase', '.testimonial-card'],
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'expo.out' }
+      );
+    }
+
+    // H. FAQ SECTION REVEAL
+    const faqSection = document.getElementById('faq');
+    const faqItemsArr = gsap.utils.toArray('.faq-item');
+    if (faqSection) {
+      const faqTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: faqSection,
+          start: 'top 80%',
+          toggleActions: 'play reverse play reverse'
+        }
+      });
+
+      faqTl.fromTo('.faq-left',
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' }
+      );
+
+      if (faqItemsArr.length > 0) {
+        faqTl.fromTo(faqItemsArr,
+          { opacity: 0, y: 25 },
+          { opacity: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power4.out' },
+          '-=0.5'
+        );
+      }
+    }
+
+    // I. "FORGED FLINT" FRACTURE TRANSITION & STAGGERED CTA REVEAL
+    if (ctaSection) {
+      const fractureTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ctaSection,
+          start: 'top 88%',
+          end: 'top 40%',
+          scrub: 0.6
+        }
+      });
+
+      fractureTl.fromTo('.flint-crack-base',
+        { strokeDashoffset: 1000 },
+        { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }
+      );
+
+      fractureTl.fromTo('.flint-crack-highlight',
+        { strokeDashoffset: 1000 },
+        { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' },
+        '-=0.3'
+      );
+
+      fractureTl.fromTo('.flint-spark',
+        { opacity: 0, x: -10 },
+        { opacity: 0.9, x: 20, duration: 0.25, stagger: 0.05, ease: 'power2.out' },
+        '-=0.2'
+      ).to('.flint-spark',
+        { opacity: 0, duration: 0.2 },
+        '-=0.05'
+      );
+
+      fractureTl.to('.flint-gap-reveal',
+        { height: 12, duration: 0.35, ease: 'power2.out' },
+        '-=0.15'
+      );
+
+      // Staggered CTA Reveal (Reverses when scrolling back up!)
+      const ctaTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ctaSection,
+          start: 'top 35%',
+          toggleActions: 'play reverse play reverse'
+        }
+      });
+
+      ctaTl.fromTo('.cta-anim-eyebrow',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' }
+      ).fromTo('.cta-white-text',
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' },
+        '-=0.3'
+      ).fromTo('.cta-gold-text',
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' },
+        '-=0.65'
+      ).fromTo('.cta-anim-subtext',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' },
+        '-=0.4'
+      ).fromTo('.cta-anim-btn',
+        { opacity: 0, scale: 0.96 },
+        { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.2)' },
+        '-=0.3'
+      );
+    }
+
+    // J. FOOTER REVEAL
+    const footer = document.querySelector('.main-footer');
+    if (footer) {
+      gsap.fromTo(['.footer-brand-statement', '.footer-nav-group'],
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: footer,
+            start: 'top 90%',
+            toggleActions: 'play reverse play reverse'
+          }
+        }
+      );
+    }
   }
 
-  // 5. FAQ Accordion Click Handler
+  // -------------------------------------------------------------
+  // 4. FAQ Accordion Click Handler
+  // -------------------------------------------------------------
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach(item => {
     const question = item.querySelector('.faq-question');
@@ -134,101 +450,36 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           item.classList.add('active');
         }
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.refresh();
+        }
       });
     }
   });
 
-  // 6. "FORGED FLINT" NATURAL FRACTURE TRANSITION & STAGGERED CTA REVEAL
-  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
+  // -------------------------------------------------------------
+  // 5. Interactive Case Study Visual Storyteller
+  // -------------------------------------------------------------
+  const storyBtns = document.querySelectorAll('.case-story-btn');
+  const caseMockup = document.getElementById('case-mockup');
 
-    if (ctaSection) {
-      // Timeline 1: Forged Flint Fracture Line Draw & 8-16px Gap Separation (Scrubbed with Scroll)
-      const fractureTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ctaSection,
-          start: 'top 88%',
-          end: 'top 40%',
-          scrub: 0.6
-        }
+  if (storyBtns.length > 0 && caseMockup) {
+    storyBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const stage = btn.getAttribute('data-stage');
+        storyBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        caseMockup.className = 'case-browser-mockup stage-' + stage;
       });
-
-      // 1. Single Thin Fracture Line Draws Across 85% Viewport
-      fractureTl.fromTo('.flint-crack-base',
-        { strokeDashoffset: 1000 },
-        { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }
-      );
-
-      fractureTl.fromTo('.flint-crack-highlight',
-        { strokeDashoffset: 1000 },
-        { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' },
-        '-=0.3'
-      );
-
-      // 2. Tiny Sparks (4 warm gold sparks) travel & fade naturally along fracture
-      fractureTl.fromTo('.flint-spark',
-        { opacity: 0, x: -10 },
-        { opacity: 0.9, x: 20, duration: 0.25, stagger: 0.05, ease: 'power2.out' },
-        '-=0.2'
-      ).to('.flint-spark',
-        { opacity: 0, duration: 0.2 },
-        '-=0.05'
-      );
-
-      // 3. Controlled Fracture Separation (Max opening 12px)
-      fractureTl.to('.flint-gap-reveal',
-        { height: 12, duration: 0.35, ease: 'power2.out' },
-        '-=0.15'
-      );
-
-      // Timeline 2: Staggered CTA Reveal (Triggers when ~70% of dark section is visible)
-      const ctaTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ctaSection,
-          start: 'top 30%', // Triggers when ~70% of dark section enters
-          toggleActions: 'play none none reverse'
-        }
-      });
-
-      // READY TO START Eyebrow
-      ctaTl.fromTo('.cta-anim-eyebrow',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
-      );
-
-      // Headline Text (Opacity 0->1, translateY 30px->0, 0.8s)
-      ctaTl.fromTo('.cta-white-text',
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'cubic-bezier(0.22, 0.61, 0.36, 1)' },
-        '-=0.3'
-      );
-
-      // Gold Accent Words (120ms later)
-      ctaTl.fromTo('.cta-gold-text',
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.7, ease: 'cubic-bezier(0.22, 0.61, 0.36, 1)' },
-        '-=0.68'
-      );
-
-      // Supporting Copy
-      ctaTl.fromTo('.cta-anim-subtext',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-        '-=0.4'
-      );
-
-      // CTA Button
-      ctaTl.fromTo('.cta-anim-btn',
-        { opacity: 0, scale: 0.96 },
-        { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.2)' },
-        '-=0.3'
-      );
-    }
+    });
   }
 
-  // 7. WARM GOLD PARTICLES DRIFTING INSIDE FORGED DARK SURFACE (#cta-particle-canvas)
+  // -------------------------------------------------------------
+  // 6. Warm Gold Particles inside CTA Surface Canvas
+  // -------------------------------------------------------------
   const particleCanvas = document.getElementById('cta-particle-canvas');
-  if (particleCanvas) {
+  if (particleCanvas && !prefersReducedMotion) {
     const ctx = particleCanvas.getContext('2d');
     let width = (particleCanvas.width = particleCanvas.offsetWidth || window.innerWidth);
     let height = (particleCanvas.height = particleCanvas.offsetHeight || 600);
@@ -277,21 +528,5 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     drawParticles();
-  }
-
-  // 8. INTERACTIVE CASE STUDY VISUAL STORYTELLER (Problem -> Strategy -> Execution -> Outcome)
-  const storyBtns = document.querySelectorAll('.case-story-btn');
-  const caseMockup = document.getElementById('case-mockup');
-
-  if (storyBtns.length > 0 && caseMockup) {
-    storyBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const stage = btn.getAttribute('data-stage');
-        storyBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        caseMockup.className = 'case-browser-mockup stage-' + stage;
-      });
-    });
   }
 });
