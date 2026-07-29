@@ -1044,7 +1044,24 @@ body::before {
   z-index: 2;
   display: flex;
   flex-direction: column;
+  padding: 1.2rem 1.5rem;
+  margin-left: -1.5rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.4s ease;
+  will-change: transform;
 }
+
+.timeline-step:hover {
+  transform: translateY(-4px);
+  background-color: var(--surface);
+  border-color: var(--border-color);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.08);
+}
+
 
 /* .step-marker is absolute inside .timeline-step.
    .timeline-step's left edge is at 3rem (due to padding-left on .timeline-right).

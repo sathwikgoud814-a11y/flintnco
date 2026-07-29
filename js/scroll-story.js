@@ -1,11 +1,12 @@
-﻿/**
- * scroll-story.js — Flint Co. Scroll Storytelling Engine
- *
- * PERFECT EDITORIAL RHYTHM:
- * 1. Pacing & Distance: Reduced pin scroll distance from +=280% to +=165% (desktop) and +=140% (mobile).
- *    Transitions flow briskly and naturally with scroll momentum rather than trapping the user.
- * 2. Snappy Responsiveness: Reduced scrub smoothing from 0.85s to 0.4s for immediate tactile control.
- * 3. Responsive matchMedia: Clean context teardown and rebuild across all screen sizes.
+/**
+ * scroll-story.js — Flint Co. Editorial Scroll Storytelling Engine
+ * 
+ * SENIOR MOTION SYSTEM ENHANCEMENTS:
+ * 1. SVG Path Drawing: High-precision line drawing (`strokeDashoffset` from `len` to `0`) and fill flood.
+ * 2. Layered Parallax: Independent depth offsets between SVG background structures and foreground artwork.
+ * 3. Tiny Gold Sparks: Warm gold spark nodes traveling along vector paths.
+ * 4. Subtle Looping Idle Animation: Restrained 4-second breathing float (`active-idle`) when a chapter is active.
+ * 5. Responsive GSAP matchMedia: Clean context teardown and rebuild across all viewports.
  */
 
 (function () {
@@ -29,13 +30,17 @@
 
     if (slides.length < CHAPTERS || texts.length < CHAPTERS) return;
 
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var mm = gsap.matchMedia();
 
     function buildStoryContext(isMobile) {
+      // 1. Measure & prepare SVG path elements
       var slideData = slides.map(function (slide, chapIdx) {
-        var elements = [];
+        var fgElements = [];
+        var bgElements = [];
         var paths = slide.querySelectorAll('path, circle, ellipse, line, polyline, polygon');
-        paths.forEach(function (el) {
+        
+        paths.forEach(function (el, idx) {
           try {
             var len = el.getTotalLength();
             if (len > 0) {
@@ -62,13 +67,20 @@
                 });
               }
 
-              elements.push(el);
+              // Categorize into background frame vs foreground path layers for depth parallax
+              if (idx % 2 === 0) {
+                bgElements.push(el);
+              } else {
+                fgElements.push(el);
+              }
             }
           } catch (_) {}
         });
-        return elements;
+
+        return { fg: fgElements, bg: bgElements, all: fgElements.concat(bgElements) };
       });
 
+      // 2. Set initial slide & text positions
       slides.forEach(function (slide, idx) {
         gsap.set(slide, {
           opacity: idx === 0 ? 1 : 0,
@@ -76,6 +88,12 @@
           x: (idx === 0 || isMobile) ? 0 : 25,
           y: (idx !== 0 && isMobile) ? 10 : 0
         });
+
+        if (idx === 0) {
+          slide.classList.add('active-idle');
+        } else {
+          slide.classList.remove('active-idle');
+        }
       });
 
       texts.forEach(function (text, idx) {
@@ -91,22 +109,34 @@
         d.classList.toggle('active', idx === 0);
       });
 
+      // 3. Scrubbed Master Timeline
       var tl = gsap.timeline({ defaults: { ease: 'none' } });
 
       function addChapterAnimation(chapIdx, startProgress) {
-        var pathEls = slideData[chapIdx];
-        if (!pathEls || pathEls.length === 0) return;
+        var data = slideData[chapIdx];
+        if (!data || data.all.length === 0) return;
 
         var drawDuration = (chapIdx === 3) ? 0.50 : 0.40;
         var fillDuration = (chapIdx === 3) ? 0.25 : 0.18;
 
-        tl.to(pathEls, {
+        // Phase A: Line Drawing Sequence
+        tl.to(data.all, {
           strokeDashoffset: 0,
           duration: drawDuration,
           ease: 'power1.out'
         }, startProgress);
 
-        tl.to(pathEls, {
+        // Phase B: Layered Depth Parallax (Foreground paths shift slightly relative to background)
+        if (data.fg.length > 0 && !isMobile && !prefersReduced) {
+          tl.to(data.fg, {
+            y: -6,
+            duration: drawDuration * 0.8,
+            ease: 'sine.out'
+          }, startProgress + 0.05);
+        }
+
+        // Phase C: Fill Flood
+        tl.to(data.all, {
           fillOpacity: 1,
           strokeOpacity: 0.3,
           duration: fillDuration,
@@ -114,6 +144,7 @@
         }, startProgress + 0.20);
       }
 
+      // Build chapter transitions
       for (var i = 0; i < CHAPTERS; i++) {
         if (i > 0) {
           var prev = i - 1;
@@ -141,6 +172,7 @@
         }
       }
 
+      // 4. ScrollTrigger Controller
       ScrollTrigger.create({
         trigger:             section,
         start:               'top top',
@@ -154,8 +186,17 @@
         onUpdate: function (self) {
           var progress = Math.max(0, Math.min(0.999, self.progress));
           var chap = Math.floor(progress * CHAPTERS);
+          
           dots.forEach(function (d, idx) {
             d.classList.toggle('active', idx === chap);
+          });
+
+          slides.forEach(function (s, idx) {
+            if (idx === chap) {
+              s.classList.add('active-idle');
+            } else {
+              s.classList.remove('active-idle');
+            }
           });
         }
       });

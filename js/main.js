@@ -260,16 +260,18 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     }
 
-    // C. PROCESS / TIMELINE SECTION REVEAL
+    // C. PROCESS / TIMELINE SECTION REVEAL (Individual Phase Card Micro-Animations)
+    const timelineLeft = document.querySelector('.timeline-left');
+    const trackLine = document.querySelector('.timeline-track-line');
     const timelineSteps = gsap.utils.toArray('.timeline-step');
-    if (timelineSteps.length > 0) {
-      gsap.fromTo(['.timeline-left', ...timelineSteps],
+
+    if (timelineLeft) {
+      gsap.fromTo(timelineLeft,
         { opacity: 0, y: 35 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.85,
-          stagger: 0.12,
+          duration: 0.9,
           ease: 'power4.out',
           scrollTrigger: {
             trigger: '#process',
@@ -279,6 +281,73 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       );
     }
+
+    if (trackLine) {
+      gsap.fromTo(trackLine,
+        { scaleY: 0, transformOrigin: 'top center' },
+        {
+          scaleY: 1,
+          duration: 1.2,
+          ease: 'power2.inOut',
+          scrollTrigger: {
+            trigger: '.timeline-right',
+            start: 'top 80%',
+            toggleActions: 'play reverse play reverse'
+          }
+        }
+      );
+    }
+
+    if (timelineSteps.length > 0) {
+      timelineSteps.forEach((step) => {
+        const stepNum = step.querySelector('.step-meta, .step-num');
+        const stepTitle = step.querySelector('.step-title');
+        const stepDesc = step.querySelector('.step-desc');
+        const stepDot = step.querySelector('.step-dot');
+
+        const stepTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: step,
+            start: 'top 85%',
+            toggleActions: 'play reverse play reverse',
+            onEnter: () => step.classList.add('revealed'),
+            onLeaveBack: () => step.classList.remove('revealed')
+          }
+        });
+
+        if (stepDot) {
+          stepTl.fromTo(stepDot,
+            { scale: 0.5, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.5)' }
+          );
+        }
+
+        if (stepNum) {
+          stepTl.fromTo(stepNum,
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' },
+            '-=0.2'
+          );
+        }
+
+        if (stepTitle) {
+          stepTl.fromTo(stepTitle,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.75, ease: 'power4.out' },
+            '-=0.35'
+          );
+        }
+
+        if (stepDesc) {
+          stepTl.fromTo(stepDesc,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' },
+            '-=0.45'
+          );
+        }
+      });
+    }
+
 
     // D. CASE STUDY SECTION REVEAL
     const caseSection = document.getElementById('work');
