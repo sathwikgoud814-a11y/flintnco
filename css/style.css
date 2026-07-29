@@ -3773,6 +3773,8 @@ html.light-theme .ba-dot {
 
   /* Closing section responsive adjustments mobile */
   .closing-section {
+    width: 100% !important;
+    max-width: 100% !important;
     padding: 6.5rem 0 0 0;
   }
 
@@ -3798,6 +3800,70 @@ html.light-theme .ba-dot {
     flex-direction: column;
     align-items: center;
   }
+
+  .main-footer {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Interactive Case Study Visual Storyteller Mobile Fixes */
+  .case-story-nav {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .case-story-btn {
+    flex: 1 1 calc(50% - 0.5rem) !important;
+    padding: 0.6rem 0.8rem !important;
+  }
+
+  .mock-grid-split {
+    grid-template-columns: 1fr !important;
+    gap: 2.5rem !important;
+  }
+
+  /* Case Study 4-Column Narrative Grid Mobile Vertical Stacking */
+  .case-narrative-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+    margin-top: 3rem !important;
+    padding-top: 2rem !important;
+  }
+
+  .narrative-col {
+    padding: 1.5rem 0 !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-color-light) !important;
+  }
+
+  .narrative-col:last-child {
+    border-bottom: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .narrative-col:not(:first-child):not(:last-child) {
+    padding-left: 0 !important;
+  }
+
+  /* Before / After Browser Mockup Showcase Mobile Vertical Stacking */
+  .ba-showcase {
+    flex-direction: column !important;
+    gap: 2.5rem !important;
+    width: 100% !important;
+  }
+
+  .ba-panel {
+    width: 100% !important;
+  }
+
+  .ba-divider-arrow {
+    transform: rotate(90deg) !important;
+    margin: 0 auto !important;
+    padding: 0.5rem 0 !important;
+  }
+
 
   /* Standalone footer mobile adjustments */
   .main-footer {
