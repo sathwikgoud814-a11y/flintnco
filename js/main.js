@@ -87,6 +87,38 @@ document.addEventListener('DOMContentLoaded', () => {
     navObserver.observe(ctaSection);
   }
 
+  // Active Section Indicator Tracking
+  const sectionsForNav = document.querySelectorAll('section[id], footer[id]');
+  const desktopNavLinks = document.querySelectorAll('.nav-link');
+
+  if (sectionsForNav.length > 0 && desktopNavLinks.length > 0) {
+    const updateActiveNavLink = () => {
+      let currentId = '';
+      const scrollPos = window.scrollY + 180;
+
+      sectionsForNav.forEach(sec => {
+        const top = sec.offsetTop;
+        const height = sec.offsetHeight;
+        if (scrollPos >= top && scrollPos < top + height) {
+          currentId = sec.getAttribute('id');
+        }
+      });
+
+      desktopNavLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (currentId && href === `#${currentId}`) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', updateActiveNavLink);
+    updateActiveNavLink();
+  }
+
+
   // Mobile Navigation Drawer Toggle
   const mobileToggle = document.getElementById('mobile-toggle');
   const mobileMenu = document.getElementById('mobile-menu');
