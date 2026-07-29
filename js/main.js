@@ -385,26 +385,92 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // E. SERVICES SECTION REVEAL
+    // E. SERVICES SECTION — Per-card layered reveal
     const serviceCards = gsap.utils.toArray('.service-card');
     if (serviceCards.length > 0) {
-      const serviceTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '#services',
-          start: 'top 80%',
-          toggleActions: 'play reverse play reverse'
+
+      // Header reveal first
+      gsap.fromTo('.services-header',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0, duration: 0.85, ease: 'power4.out',
+          scrollTrigger: {
+            trigger: '.services-section',
+            start: 'top 80%',
+            toggleActions: 'play reverse play reverse'
+          }
+        }
+      );
+
+      // Each card: sequential sub-timeline triggered individually
+      serviceCards.forEach((card, i) => {
+        const idx    = card.querySelector('.service-index');
+        const title  = card.querySelector('.service-title');
+        const desc   = card.querySelector('.service-desc');
+        const tags   = gsap.utils.toArray('.outcome-tag', card);
+        const link   = card.querySelector('.service-link');
+
+        const cardTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 88%',
+            toggleActions: 'play reverse play reverse'
+          }
+        });
+
+        // 1. Card container lifts into view
+        cardTl.fromTo(card,
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' }
+        );
+
+        // 2. Index label fades
+        if (idx) {
+          cardTl.fromTo(idx,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.45, ease: 'power2.out' },
+            '-=0.6'
+          );
+        }
+
+        // 3. Title slides up
+        if (title) {
+          cardTl.fromTo(title,
+            { opacity: 0, y: 22 },
+            { opacity: 1, y: 0, duration: 0.65, ease: 'power4.out' },
+            '-=0.35'
+          );
+        }
+
+        // 4. Description fades
+        if (desc) {
+          cardTl.fromTo(desc,
+            { opacity: 0, y: 14 },
+            { opacity: 1, y: 0, duration: 0.55, ease: 'power4.out' },
+            '-=0.4'
+          );
+        }
+
+        // 5. Outcome tags stagger in
+        if (tags.length > 0) {
+          cardTl.fromTo(tags,
+            { opacity: 0, x: -8 },
+            { opacity: 1, x: 0, duration: 0.4, stagger: 0.07, ease: 'power3.out' },
+            '-=0.3'
+          );
+        }
+
+        // 6. CTA link fades up last
+        if (link) {
+          cardTl.fromTo(link,
+            { opacity: 0, y: 8 },
+            { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' },
+            '-=0.25'
+          );
         }
       });
-
-      serviceTl.fromTo('.services-header',
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' }
-      ).fromTo(serviceCards,
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.85, stagger: 0.1, ease: 'power4.out' },
-        '-=0.4'
-      );
     }
+
 
     // F. PHILOSOPHY / VALUE PROP SECTION REVEAL
     const valpropRows = gsap.utils.toArray('.valprop-row');
