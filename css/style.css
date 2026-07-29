@@ -14,10 +14,47 @@
   
   --font-body: 'Inter', sans-serif;
   --font-title: 'Instrument Serif', serif;
-  --max-width: 1400px;
+  --max-width: 1280px;
+  --container-padding: 4rem;
   
   --noise-opacity: 0.035;
 }
+
+@media (max-width: 1024px) {
+  :root {
+    --container-padding: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --container-padding: 1.5rem;
+  }
+}
+
+/* Unified Master Container Grid Alignment (100% Vertical Axis Locking) */
+.nav-container,
+.hero-container,
+.trust-container,
+.story-container,
+.cards-container,
+.chapter-pin-stage,
+.timeline-container,
+.case-study-container,
+.services-container,
+.valprop-container,
+.testimonials-container,
+.faq-container,
+.closing-container,
+.footer-container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
 
 
 /* Reset & Global Styles */

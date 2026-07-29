@@ -1,17 +1,17 @@
 ﻿/**
  * scroll-story.js — Flint Co. Scroll Storytelling Engine
  *
- * ROOT-CAUSE ARCHITECTURE:
- * Uses GSAP `matchMedia()` to bind desktop & mobile contexts separately.
- * When the window resizes or crosses breakpoints, GSAP automatically reverts inline styles,
- * purges stale timelines, re-measures SVG path lengths, and rebuilds fresh timelines.
+ * PERFECT EDITORIAL RHYTHM:
+ * 1. Pacing & Distance: Reduced pin scroll distance from +=280% to +=165% (desktop) and +=140% (mobile).
+ *    Transitions flow briskly and naturally with scroll momentum rather than trapping the user.
+ * 2. Snappy Responsiveness: Reduced scrub smoothing from 0.85s to 0.4s for immediate tactile control.
+ * 3. Responsive matchMedia: Clean context teardown and rebuild across all screen sizes.
  */
 
 (function () {
   'use strict';
 
   var CHAPTERS = 4;
-  var SCRUB    = 0.85;
 
   function init() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
@@ -29,12 +29,9 @@
 
     if (slides.length < CHAPTERS || texts.length < CHAPTERS) return;
 
-    // Use GSAP's native responsive matchMedia engine
     var mm = gsap.matchMedia();
 
-    // Helper: Build timeline & ScrollTrigger for a specific mobile/desktop context
     function buildStoryContext(isMobile) {
-      // 1. Measure SVG path lengths dynamically for current screen width
       var slideData = slides.map(function (slide, chapIdx) {
         var elements = [];
         var paths = slide.querySelectorAll('path, circle, ellipse, line, polyline, polygon');
@@ -72,18 +69,8 @@
         return elements;
       });
 
-      // 2. Set initial slide states
       slides.forEach(function (slide, idx) {
         gsap.set(slide, {
-          opacity: idx === 0 ? 1 : 0,
-          visibility: idx === 0 ? 'visible' : 'hidden',
-          x: (idx === 0 || isMobile) ? 0 : 30,
-          y: (idx !== 0 && isMobile) ? 12 : 0
-        });
-      });
-
-      texts.forEach(function (text, idx) {
-        gsap.set(text, {
           opacity: idx === 0 ? 1 : 0,
           visibility: idx === 0 ? 'visible' : 'hidden',
           x: (idx === 0 || isMobile) ? 0 : 25,
@@ -91,19 +78,27 @@
         });
       });
 
+      texts.forEach(function (text, idx) {
+        gsap.set(text, {
+          opacity: idx === 0 ? 1 : 0,
+          visibility: idx === 0 ? 'visible' : 'hidden',
+          x: (idx === 0 || isMobile) ? 0 : 20,
+          y: (idx !== 0 && isMobile) ? 8 : 0
+        });
+      });
+
       dots.forEach(function (d, idx) {
         d.classList.toggle('active', idx === 0);
       });
 
-      // 3. Master Scrubbed Timeline
       var tl = gsap.timeline({ defaults: { ease: 'none' } });
 
       function addChapterAnimation(chapIdx, startProgress) {
         var pathEls = slideData[chapIdx];
         if (!pathEls || pathEls.length === 0) return;
 
-        var drawDuration = (chapIdx === 3) ? 0.55 : 0.45;
-        var fillDuration = (chapIdx === 3) ? 0.30 : 0.20;
+        var drawDuration = (chapIdx === 3) ? 0.50 : 0.40;
+        var fillDuration = (chapIdx === 3) ? 0.25 : 0.18;
 
         tl.to(pathEls, {
           strokeDashoffset: 0,
@@ -116,46 +111,45 @@
           strokeOpacity: 0.3,
           duration: fillDuration,
           ease: 'power2.inOut'
-        }, startProgress + 0.25);
+        }, startProgress + 0.20);
       }
 
       for (var i = 0; i < CHAPTERS; i++) {
         if (i > 0) {
           var prev = i - 1;
           var curr = i;
-          var transitionOut = prev * 1.0 + 0.70;
+          var transitionOut = prev * 1.0 + 0.65;
           var transitionIn  = curr * 1.0;
 
-          var moveOutProps = isMobile ? { opacity: 0, y: -12, duration: 0.20, ease: 'power2.in' } : { opacity: 0, x: -30, duration: 0.20, ease: 'power2.in' };
-          var textOutProps = isMobile ? { opacity: 0, y: -10, duration: 0.20, ease: 'power2.in' } : { opacity: 0, x: -25, duration: 0.20, ease: 'power2.in' };
+          var moveOutProps = isMobile ? { opacity: 0, y: -10, duration: 0.18, ease: 'power2.in' } : { opacity: 0, x: -25, duration: 0.18, ease: 'power2.in' };
+          var textOutProps = isMobile ? { opacity: 0, y: -8, duration: 0.18, ease: 'power2.in' } : { opacity: 0, x: -20, duration: 0.18, ease: 'power2.in' };
 
-          var moveInProps = isMobile ? { opacity: 1, y: 0, duration: 0.22, ease: 'power2.out' } : { opacity: 1, x: 0, duration: 0.22, ease: 'power2.out' };
-          var textInProps = isMobile ? { opacity: 1, y: 0, duration: 0.22, ease: 'power2.out' } : { opacity: 1, x: 0, duration: 0.22, ease: 'power2.out' };
+          var moveInProps = isMobile ? { opacity: 1, y: 0, duration: 0.20, ease: 'power2.out' } : { opacity: 1, x: 0, duration: 0.20, ease: 'power2.out' };
+          var textInProps = isMobile ? { opacity: 1, y: 0, duration: 0.20, ease: 'power2.out' } : { opacity: 1, x: 0, duration: 0.20, ease: 'power2.out' };
 
           tl.to(slides[prev], moveOutProps, transitionOut);
           tl.to(texts[prev],  textOutProps, transitionOut);
-          tl.set(slides[prev], { visibility: 'hidden' }, transitionOut + 0.20);
-          tl.set(texts[prev],  { visibility: 'hidden' }, transitionOut + 0.20);
+          tl.set(slides[prev], { visibility: 'hidden' }, transitionOut + 0.18);
+          tl.set(texts[prev],  { visibility: 'hidden' }, transitionOut + 0.18);
 
           tl.set(slides[curr], { visibility: 'visible' }, transitionIn);
           tl.set(texts[curr],  { visibility: 'visible' }, transitionIn);
           tl.to(slides[curr], moveInProps, transitionIn);
           tl.to(texts[curr],  textInProps, transitionIn);
 
-          addChapterAnimation(curr, transitionIn + 0.10);
+          addChapterAnimation(curr, transitionIn + 0.08);
         }
       }
 
-      // 4. ScrollTrigger Controller
       ScrollTrigger.create({
         trigger:             section,
         start:               'top top',
-        end:                 '+=280%',
+        end:                 isMobile ? '+=140%' : '+=165%',
         pin:                 true,
         anticipatePin:       1,
         invalidateOnRefresh: true,
         refreshPriority:     1,
-        scrub:               SCRUB,
+        scrub:               0.4,
         animation:           tl,
         onUpdate: function (self) {
           var progress = Math.max(0, Math.min(0.999, self.progress));
@@ -167,12 +161,10 @@
       });
     }
 
-    // Register Desktop Match
     mm.add("(min-width: 769px)", function () {
       buildStoryContext(false);
     });
 
-    // Register Mobile Match
     mm.add("(max-width: 768px)", function () {
       buildStoryContext(true);
     });
