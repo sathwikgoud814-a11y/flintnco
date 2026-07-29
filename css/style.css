@@ -4,23 +4,6 @@
    ------------------------------------------------------------- */
 
 :root {
-  --bg: #050505;
-  --surface: #111111;
-  --text-primary: #FFFFFF;
-  --text-secondary: #B8B8B8;
-  --accent: #D4AF37;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-color-light: rgba(255, 255, 255, 0.04);
-  
-  --font-body: 'Inter', sans-serif;
-  --font-title: 'Instrument Serif', serif;
-  --max-width: 1400px;
-  
-  --noise-opacity: 0.02;
-}
-
-/* Light Theme Variables */
-html.light-theme {
   --bg: #F8F6F2;
   --surface: #FFFFFF;
   --text-primary: #171717;
@@ -29,8 +12,13 @@ html.light-theme {
   --border-color: #E8E3DA;
   --border-color-light: rgba(23, 23, 23, 0.06);
   
+  --font-body: 'Inter', sans-serif;
+  --font-title: 'Instrument Serif', serif;
+  --max-width: 1400px;
+  
   --noise-opacity: 0.035;
 }
+
 
 /* Reset & Global Styles */
 * {
@@ -62,7 +50,7 @@ body::before {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 80vh; min-height: 580px; max-height: 720px;
   opacity: var(--noise-opacity);
   z-index: 9999;
   pointer-events: none;
@@ -86,28 +74,26 @@ body::before {
   background: var(--accent);
 }
 
-/* Float Navigation Header */
+/* Section 1-FAQ: Light State Navigation Bar */
 .header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 2.5rem 0; /* Premium spacing / Large padding initially */
-  transition: padding 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-              background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-              backdrop-filter 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-              border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  border-bottom: 1px solid transparent;
+  padding: 1.6rem 0;
+  background-color: #FAF8F5;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  /* Header background & border transition starts with 100ms delay */
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, 
+              border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, 
+              box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+              padding 0.4s ease;
 }
 
-/* Scrolled state with glassmorphism */
 .header.scrolled {
-  padding: 1.2rem 0; /* Slightly more compact on scroll */
-  background-color: rgba(5, 5, 5, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-color-light);
+  padding: 1.1rem 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
 }
 
 .nav-container {
@@ -117,22 +103,23 @@ body::before {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 4rem; /* Large horizontal padding */
+  padding: 0 4rem;
 }
 
-/* Logo / Wordmark */
+/* Logo / Wordmark — Transitions 100ms BEFORE the rest of the navbar */
 .logo {
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 0.95rem;
   letter-spacing: 0.25em;
   text-decoration: none;
-  color: var(--text-primary);
-  transition: opacity 0.3s ease;
+  color: #111111;
+  /* Logo color transition starts immediately (0s delay) */
+  transition: color 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0s;
 }
 
 .logo:hover {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* Nav Links Menu */
@@ -146,19 +133,19 @@ body::before {
   font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 400;
-  color: var(--text-secondary);
+  color: #111111;
   text-decoration: none;
   position: relative;
-  transition: color 0.3s ease;
+  /* Nav links transition with 100ms delay */
+  transition: color 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
   letter-spacing: 0.02em;
   padding: 0.5rem 0;
 }
 
 .nav-link:hover {
-  color: var(--text-primary);
+  color: #D4AF37;
 }
 
-/* Elegant sliding underline hover animation */
 .nav-link::after {
   content: '';
   position: absolute;
@@ -166,7 +153,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 1px;
-  background-color: var(--accent);
+  background-color: #D4AF37;
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -183,29 +170,70 @@ body::before {
   gap: 1.5rem;
 }
 
-/* Primary CTA Button */
+/* Light State CTA Button */
 .cta-button {
-  display: inline-block;
-  background-color: var(--text-primary);
-  color: var(--bg);
-  border: 1px solid var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #111111;
+  color: #FFFFFF;
+  border: 1px solid #111111;
   padding: 0.75rem 1.6rem;
   border-radius: 100px;
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 500;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  /* CTA Button transitions with 100ms delay */
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, 
+              color 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, 
+              border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, 
+              transform 0.4s ease;
+  will-change: transform, background-color, color;
 }
 
 .cta-button:hover {
-  background-color: transparent;
-  color: var(--text-primary);
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.12);
+  background-color: #D4AF37;
+  color: #111111;
+  border-color: #D4AF37;
   transform: translateY(-1px);
 }
+
+/* -------------------------------------------------------------
+   Dark State Overrides (.header.navbar-dark) when CTA enters
+   ------------------------------------------------------------- */
+.header.navbar-dark {
+  background-color: #090909;
+  border-bottom-color: rgba(212, 175, 55, 0.15);
+}
+
+.header.navbar-dark .logo {
+  color: #FFFFFF;
+}
+
+.header.navbar-dark .nav-link {
+  color: #FFFFFF;
+}
+
+.header.navbar-dark .nav-link:hover {
+  color: #D4AF37;
+}
+
+.header.navbar-dark .cta-button {
+  background-color: #FFFFFF;
+  color: #090909;
+  border-color: #FFFFFF;
+}
+
+.header.navbar-dark .cta-button:hover {
+  background-color: #D4AF37;
+  color: #090909;
+  border-color: #D4AF37;
+}
+
+
+
 
 /* Mobile Toggle Hamburger */
 .mobile-menu-btn {
@@ -243,7 +271,7 @@ body::before {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: 80vh; min-height: 580px; max-height: 720px;
   background-color: var(--bg);
   z-index: 999;
   display: flex;
@@ -293,12 +321,12 @@ body::before {
    Full-Screen Hero Section Styles
    ------------------------------------------------------------- */
 .hero-section {
-  min-height: 100vh;
+  min-height: 85vh;
   display: flex;
   align-items: center;
-  padding-top: 7rem;
+  padding: 8rem 0 5rem;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   background-color: var(--bg);
 }
 
@@ -338,27 +366,29 @@ body::before {
 
 .hero-paragraph {
   font-family: var(--font-body);
-  font-size: clamp(1rem, 1.2vw, 1.08rem);
+  font-size: 1.15rem;
   font-weight: 300;
-  line-height: 1.75;
+  line-height: 1.8;
   color: var(--text-secondary);
-  max-width: 530px;
   margin-bottom: 3.5rem;
+  max-width: 520px;
 }
 
 /* Button Group Actions */
 .hero-btn-group {
   display: flex;
-  gap: 1.5rem;
   align-items: center;
+  gap: 2.2rem;
 }
 
 .btn-primary {
-  display: inline-block;
-  background-color: var(--text-primary);
-  color: var(--bg);
-  border: 1px solid var(--text-primary);
-  padding: 0.95rem 2.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.95rem 2.5rem;
   border-radius: 100px;
   font-family: var(--font-body);
   font-size: 0.85rem;
@@ -366,18 +396,22 @@ body::before {
   letter-spacing: 0.02em;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, background-color, color;
 }
 
 .btn-primary:hover {
-  background-color: transparent;
-  color: var(--text-primary);
+  background-color: var(--accent);
+  color: #090909;
   border-color: var(--accent);
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
   transform: translateY(-2px);
 }
 
+
 .btn-secondary {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: transparent;
   color: var(--text-secondary);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -411,7 +445,7 @@ body::before {
   transform: translate(-50%, -50%);
   width: 120%;
   height: 120%;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.025) 0%, rgba(5, 5, 5, 0) 70%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.015) 0%, rgba(5, 5, 5, 0) 70%);
   z-index: 1;
   pointer-events: none;
 }
@@ -424,8 +458,8 @@ body::before {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.8);
-  /* Smooth transform spring-effect handled dynamically in JavaScript */
+  /* Soft, light, refined editorial drop shadow (No heavy dark harshness, zero bottom clipping) */
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.14), 0 6px 16px rgba(0, 0, 0, 0.06);
   transform-style: preserve-3d;
   will-change: transform;
 }
@@ -590,7 +624,7 @@ body::before {
    Storytelling Section (Friction Analysis)
    ------------------------------------------------------------- */
 .story-section {
-  padding: 9.5rem 0;
+  padding: 4.5rem 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--border-color-light);
   position: relative;
@@ -610,7 +644,7 @@ body::before {
   font-weight: 400;
   line-height: 1.15;
   color: var(--text-primary);
-  margin-bottom: 4.5rem;
+  margin-bottom: 2.5rem;
   max-width: 840px;
   text-align: left;
 }
@@ -780,7 +814,7 @@ body::before {
    Strategic Process Timeline (The Flint Method)
    ------------------------------------------------------------- */
 .timeline-section {
-  padding: 9.5rem 0;
+  padding: 4.5rem 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--border-color-light);
   position: relative;
@@ -790,7 +824,7 @@ body::before {
 .timeline-container {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
-  gap: 6rem;
+  gap: 3.5rem;
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
@@ -954,7 +988,7 @@ body::before {
    Premium Case Study Section (Aether Group)
    ------------------------------------------------------------- */
 .case-study-section {
-  padding: 10rem 0;
+  padding: 4.5rem 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--border-color-light);
   position: relative;
@@ -1005,10 +1039,60 @@ body::before {
   max-width: 620px;
 }
 
+/* 4-Stage Visual Storyteller Selector */
+.case-story-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.case-story-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.case-story-btn .cs-num {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.case-story-btn .cs-label {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.case-story-btn:hover,
+.case-story-btn.active {
+  border-color: var(--accent);
+  background: var(--bg);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.12);
+}
+
+.case-story-btn.active .cs-label {
+  color: var(--text-primary);
+}
+
 /* Large Browser Mockup */
 .case-visual-wrapper {
-  margin-bottom: 5.5rem;
+  margin-bottom: 3rem;
   perspective: 1000px;
+  position: relative;
 }
 
 .case-browser-mockup {
@@ -1016,8 +1100,40 @@ body::before {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), 0 6px 16px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
+
+/* Visual Stage Overlays */
+.mock-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(212, 175, 55, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.12) 1px, transparent 1px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 5;
+}
+
+.case-browser-mockup.stage-strategy .mock-grid-overlay {
+  opacity: 1;
+}
+
+.case-browser-mockup.stage-problem .mock-img-frame {
+  filter: grayscale(100%) contrast(85%) opacity(0.5);
+  transform: scale(0.98);
+  transition: all 0.5s ease;
+}
+
+.case-browser-mockup.stage-execution .mock-img-frame {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  transition: all 0.5s ease;
+}
+
 
 .case-browser-content {
   background-color: #050505;
@@ -1126,7 +1242,7 @@ body::before {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 3rem;
-  margin-bottom: 5.5rem;
+  margin-bottom: 3rem;
   border-bottom: 1px solid var(--border-color-light);
   padding-bottom: 4.5rem;
 }
@@ -1222,7 +1338,7 @@ body::before {
    Bespoke Services Section
    ------------------------------------------------------------- */
 .services-section {
-  padding: 9.5rem 0;
+  padding: 4.5rem 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--border-color-light);
   position: relative;
@@ -1382,7 +1498,7 @@ body::before {
    Premium Value Proposition Section (Philosophy)
    ------------------------------------------------------------- */
 .valprop-section {
-  padding: 9.5rem 0;
+  padding: 4.5rem 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--border-color-light);
   position: relative;
@@ -1400,7 +1516,7 @@ body::before {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 4.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .valprop-tag {
@@ -1427,12 +1543,12 @@ body::before {
 .valprop-grid {
   display: flex;
   flex-direction: column;
-  gap: 5.5rem;
+  gap: 3rem;
 }
 
 .valprop-row {
   display: grid;
-  gap: 6rem;
+  gap: 3.5rem;
 }
 
 .row-odd {
@@ -1517,7 +1633,7 @@ body::before {
    Luxury Testimonials Section (Social Proof)
    ------------------------------------------------------------- */
 .testimonials-section {
-  padding: 9.5rem 0;
+  padding: 4.5rem 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--border-color-light);
   position: relative;
@@ -1535,7 +1651,7 @@ body::before {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 4.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .testimonials-tag {
@@ -1632,7 +1748,7 @@ body::before {
    Premium FAQ Accordion Section
    ------------------------------------------------------------- */
 .faq-section {
-  padding: 9.5rem 0;
+  padding: 4.5rem 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--border-color-light);
   position: relative;
@@ -1642,7 +1758,7 @@ body::before {
 .faq-container {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
-  gap: 6rem;
+  gap: 3.5rem;
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
@@ -1787,20 +1903,114 @@ body::before {
 }
 
 /* -------------------------------------------------------------
-   Dramatic Closing Section & Footer
+   Full Viewport Physical Forged Dark CTA Surface & Canvas Particles
    ------------------------------------------------------------- */
 .closing-section {
-  padding: 10.5rem 0 0 0;
-  background: radial-gradient(circle at center, rgba(212, 175, 55, 0.03) 0%, rgba(5, 5, 5, 0) 70%), var(--bg);
+  min-height: auto;
+  padding: 5rem 2rem 3.5rem;
+  background-color: #090909;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   z-index: 10;
 }
 
-.closing-container {
+/* "Forged Flint" Natural Fracture Transition Surface */
+.flint-fracture-wrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 85%;
+  max-width: 1200px;
+  height: 40px;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.flint-fracture-svg {
   width: 100%;
-  max-width: var(--max-width);
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.flint-crack-base {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+
+.flint-crack-highlight {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+
+/* 4 Tiny Warm Gold Sparks Along Fracture Path */
+.flint-sparks-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.flint-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background-color: #D4AF37;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #D4AF37;
+  opacity: 0;
+}
+
+.flint-spark.spark-1 { top: 18px; left: 22%; }
+.flint-spark.spark-2 { top: 22px; left: 45%; }
+.flint-spark.spark-3 { top: 17px; left: 68%; }
+.flint-spark.spark-4 { top: 21px; left: 82%; }
+
+/* Controlled Fracture Separation Gap (8px to 16px Max Opening) */
+.flint-gap-reveal {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  height: 0px;
+  background: #090909;
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Soft vertical gradient boundary at the top edge of the forged dark surface */
+.closing-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 140px;
+  background: linear-gradient(to bottom, #F8F6F2 0%, rgba(50, 48, 45, 0.25) 30%, rgba(15, 15, 15, 0.75) 65%, #090909 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+.cta-particle-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.8;
+}
+
+.closing-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 0 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1811,34 +2021,79 @@ body::before {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 7.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.closing-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 1.5rem;
+  display: block;
 }
 
 .closing-headline {
   font-family: var(--font-title);
-  font-size: clamp(2.8rem, 5.2vw, 5.2vw);
+  font-size: clamp(2.8rem, 5.5vw, 5.2rem);
   font-weight: 400;
-  line-height: 1.15;
-  color: var(--text-primary);
-  margin-bottom: 2.8rem;
-  max-width: 1000px;
+  line-height: 1.12;
+  color: #FFFFFF;
+  margin-bottom: 1.8rem;
+  max-width: 900px;
 }
 
-.closing-headline em {
+.cta-white-text {
+  display: inline-block;
+  color: #FFFFFF;
+  will-change: transform, opacity;
+}
+
+.cta-gold-text {
+  display: inline-block;
   font-style: italic;
-  color: var(--accent);
+  color: #D4AF37;
+  will-change: transform, opacity;
+}
+
+.cta-anim-eyebrow,
+.cta-anim-subtext,
+.cta-anim-btn {
+  will-change: transform, opacity;
+}
+
+.closing-subtext {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  font-weight: 400;
+  line-height: 1.7;
+  color: #B8B8B8;
+  max-width: 620px;
+  margin-bottom: 3rem;
 }
 
 .closing-cta-btn-wrap {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
 }
 
-/* Standalone Premium Footer */
+.closing-friction {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #888888;
+}
+
+
+
+/* Standalone Premium Black Footer — Unified Forged Ending */
 .main-footer {
-  padding: 7rem 0 4.5rem 0;
-  background-color: var(--bg);
-  border-top: 1px solid var(--border-color-light);
+  padding: 4.5rem 0 4.5rem 0;
+  background-color: #090909;
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
   position: relative;
   z-index: 10;
 }
@@ -1846,7 +2101,7 @@ body::before {
 .footer-container {
   display: grid;
   grid-template-columns: 1fr 1.25fr;
-  gap: 6rem;
+  gap: 3.5rem;
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
@@ -1864,8 +2119,8 @@ body::before {
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.15em;
-  color: var(--text-primary);
-  margin-bottom: 2rem;
+  color: #FFFFFF;
+  margin-bottom: 1.5rem;
 }
 
 .footer-brand-statement {
@@ -1873,16 +2128,15 @@ body::before {
   font-size: 0.9rem;
   font-weight: 300;
   line-height: 1.7;
-  color: var(--text-secondary);
+  color: #CFCFCF;
   max-width: 360px;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .footer-copyright-desktop {
   font-family: var(--font-body);
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-  opacity: 0.7;
+  font-size: 0.75rem;
+  color: #A0A0A0;
 }
 
 .footer-copyright-mobile {
@@ -1907,15 +2161,15 @@ body::before {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--accent);
-  margin-bottom: 2rem;
+  color: #D4AF37;
+  margin-bottom: 1.8rem;
 }
 
 .footer-nav-link {
   font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 300;
-  color: var(--text-secondary);
+  color: #CFCFCF;
   text-decoration: none;
   margin-bottom: 1.2rem;
   display: block;
@@ -1923,8 +2177,9 @@ body::before {
 }
 
 .footer-nav-link:hover {
-  color: var(--text-primary);
+  color: #D4AF37;
 }
+
 
 /* -------------------------------------------------------------
    Adaptive Theme Toggle Button & Mockup Overrides
@@ -2003,7 +2258,7 @@ html.light-theme .theme-toggle-btn .moon-icon {
 html.light-theme .browser-mockup {
   background-color: #FFFFFF;
   border: 1px solid var(--border-color);
-  box-shadow: 0 30px 80px rgba(23, 23, 23, 0.06);
+  box-shadow: 0 12px 30px rgba(23, 23, 23, 0.03);
 }
 
 html.light-theme .browser-chrome {
@@ -2024,7 +2279,7 @@ html.light-theme .chrome-address {
 html.light-theme .case-browser-mockup {
   background-color: #FFFFFF;
   border: 1px solid var(--border-color);
-  box-shadow: 0 45px 95px rgba(23, 23, 23, 0.06);
+  box-shadow: 0 16px 36px rgba(23, 23, 23, 0.03);
 }
 
 html.light-theme .case-browser-content {
@@ -2062,12 +2317,616 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 }
 
 /* -------------------------------------------------------------
+   Customer Drop-off Flow Diagram
+   ------------------------------------------------------------- */
+.dropout-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 4rem 0 5.5rem 0;
+  flex-wrap: wrap;
+}
+
+.dropout-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  flex: 0 0 auto;
+}
+
+.dropout-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  transition: all 0.4s ease;
+}
+
+.dropout-step-final .dropout-circle {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.dropout-circle-final {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.dropout-label {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 130px;
+  line-height: 1.5;
+}
+
+.dropout-step-final .dropout-label {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.dropout-arrow {
+  font-size: 1.2rem;
+  color: var(--border-color);
+  padding: 0 2rem;
+  padding-bottom: 2rem;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+/* -------------------------------------------------------------
+   Case Study Narrative Grid (Before / After / Why)
+   ------------------------------------------------------------- */
+.case-narrative-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border-color-light);
+  margin-top: 5rem;
+  padding-top: 3rem;
+}
+
+.narrative-col {
+  padding: 2rem 2.5rem 2rem 0;
+  border-right: 1px solid var(--border-color-light);
+}
+
+.narrative-col:last-child {
+  border-right: none;
+  padding-right: 0;
+  padding-left: 2.5rem;
+}
+
+.narrative-col:not(:first-child):not(:last-child) {
+  padding-left: 2.5rem;
+}
+
+.narrative-num {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 1.2rem;
+}
+
+.narrative-label {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.narrative-text {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* -------------------------------------------------------------
+   Before / After Browser Mockup Showcase (Work Section)
+   ------------------------------------------------------------- */
+.ba-showcase {
+  display: flex;
+  align-items: flex-start;
+  gap: 2.5rem;
+  margin: 4rem 0 2.5rem 0;
+}
+
+.ba-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ba-label {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary);
+}
+
+.ba-label-after {
+  color: var(--accent);
+}
+
+/* Full browser window shell */
+.ba-browser {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--surface);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+}
+
+.ba-browser-after {
+  border-color: var(--accent);
+  box-shadow: 0 20px 60px rgba(212, 175, 55, 0.1);
+}
+
+/* Browser chrome toolbar */
+.ba-chrome {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ba-chrome-after {
+  background: var(--surface);
+}
+
+.ba-dots {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.ba-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border-color);
+  display: block;
+}
+
+.ba-url {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  background: var(--border-color-light);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  opacity: 0.7;
+  flex: 1;
+  text-align: center;
+}
+
+.ba-url-after {
+  opacity: 1;
+  background: var(--surface);
+}
+
+/* Site content areas */
+.ba-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.ba-content-before {
+  opacity: 0.55;
+}
+
+.ba-site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ba-nav-after {
+  opacity: 1;
+}
+
+.wf-nav-logo {
+  height: 8px;
+  width: 60px;
+  background: var(--border-color);
+  border-radius: 2px;
+}
+
+.wf-nav-logo-after {
+  background: var(--text-primary);
+  opacity: 0.6;
+}
+
+.wf-nav-links {
+  display: flex;
+  gap: 12px;
+}
+
+.wf-nav-link {
+  height: 6px;
+  width: 28px;
+  background: var(--border-color);
+  border-radius: 2px;
+}
+
+.wf-cta-pill {
+  height: 22px;
+  width: 80px;
+  background: var(--text-primary);
+  border-radius: 12px;
+  opacity: 0.8;
+}
+
+/* Hero wireframe lines */
+.wf-h {
+  border-radius: 3px;
+  background: var(--border-color);
+}
+
+.wf-h-xl  { height: 16px; width: 90%; }
+.wf-h-lg  { height: 12px; width: 75%; }
+.wf-h-md  { height: 10px; width: 55%; }
+.wf-h-sm  { height: 7px;  width: 35%; }
+
+.wf-accent-line {
+  background: var(--accent);
+  opacity: 0.45;
+}
+
+.wf-eyebrow {
+  height: 6px;
+  width: 25%;
+  background: var(--accent);
+  border-radius: 2px;
+  opacity: 0.55;
+}
+
+.ba-hero-before,
+.ba-hero-after {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.8rem 0;
+}
+
+.wf-p-block {
+  height: 32px;
+  width: 100%;
+  background: var(--border-color);
+  border-radius: 3px;
+  margin-top: 0.4rem;
+  opacity: 0.5;
+}
+
+.wf-p-short {
+  width: 70%;
+  height: 22px;
+}
+
+.wf-cta-btn {
+  height: 30px;
+  width: 42%;
+  background: var(--accent);
+  opacity: 0.6;
+  border-radius: 4px;
+  margin-top: 0.4rem;
+}
+
+/* Before: chaotic 3-card grid */
+.ba-grid-before {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.wf-card {
+  height: 52px;
+  background: var(--border-color);
+  border-radius: 3px;
+  opacity: 0.6;
+}
+
+.ba-body-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.4rem;
+}
+
+/* After: clean trust strip */
+.ba-trust-strip {
+  display: flex;
+  gap: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.wf-trust-item {
+  flex: 1;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 2px;
+  opacity: 0.5;
+}
+
+.ba-caption {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.ba-divider-arrow {
+  font-size: 1.8rem;
+  color: var(--accent);
+  flex: 0 0 auto;
+  opacity: 0.6;
+  padding-top: 8rem;
+}
+
+.ba-nda-note {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: var(--text-secondary);
+  opacity: 0.65;
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
+/* Light theme overrides for ba-browser */
+html.light-theme .ba-browser {
+  box-shadow: 0 20px 60px rgba(23, 23, 23, 0.06);
+}
+
+html.light-theme .ba-chrome {
+  background: #F1EFEA;
+}
+
+html.light-theme .ba-dot {
+  background: #DDD8CE;
+}
+
+/* -------------------------------------------------------------
+   CTA Friction Line
+   ------------------------------------------------------------- */
+.closing-friction {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-align: center;
+  opacity: 0.65;
+}
+
+/* -------------------------------------------------------------
+   Scroll Storytelling Section — CSS Sticky + GSAP scrub
+   ------------------------------------------------------------- */
+
+/* Outer section & GSAP Pin Spacer width enforcement */
+.pin-spacer,
+.pin-spacer #scroll-story-section,
+.chapter-pin-section {
+  position: relative;
+  background: var(--bg);
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Pinned stage — 100vh height viewport */
+.chapter-pin-stage {
+  position: relative;
+  height: 80vh; min-height: 580px; max-height: 720px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0 var(--padding-x);
+}
+
+
+
+/* ── Left Column — 48% — ONE large illustration container ── */
+.chapter-svg-col {
+  width: 48%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Single container that holds ALL slides stacked */
+.chapter-illus-container {
+  position: relative;
+  width: 100%;
+  max-width: 620px;   /* Expansive desktop illustration cap */
+  aspect-ratio: 4 / 3;
+  flex-shrink: 0;
+}
+
+/* Each slide: absolutely stacked inside the same container */
+.chapter-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateX(40px);
+  will-change: opacity, transform;
+  pointer-events: none;
+}
+
+.chapter-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 620px;
+  color: var(--text-secondary);
+  overflow: visible;
+  display: block;
+}
+
+.chapter-svg path,
+.chapter-svg circle,
+.chapter-svg line,
+.chapter-svg polyline,
+.chapter-svg polygon {
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chapter-svg-accent {
+  stroke: var(--accent) !important;
+}
+
+/* ── Right Column — 52% — ONE text block visible at a time ── */
+.chapter-text-col {
+  width: 52%;
+  flex-shrink: 0;
+  padding-left: 4rem;
+  position: relative;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+}
+
+.chapter-text-slide {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%) translateX(30px);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.chapter-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 1.4rem;
+}
+
+.chapter-heading {
+  font-family: var(--font-title);
+  font-size: clamp(2.2rem, 3.8vw, 3.8rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-bottom: 1.4rem;
+  letter-spacing: -0.02em;
+}
+
+.chapter-heading em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.chapter-body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  max-width: 520px;
+}
+
+
+/* ── Progress dots — absolute within sticky stage ── */
+.chapter-progress {
+  position: absolute;
+  bottom: 2.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.8rem;
+  z-index: 10;
+}
+
+.chapter-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-color);
+  transition: background 0.4s ease, transform 0.4s ease;
+  display: block;
+  flex-shrink: 0;
+}
+
+.chapter-dot.active {
+  background: var(--accent);
+  transform: scale(1.4);
+}
+
+
+/* -------------------------------------------------------------
    Responsive Breakpoints
    ------------------------------------------------------------- */
 @media (max-width: 1024px) {
+  /* Scroll story: tablet illustration cap = 380px */
+  .chapter-illus-container {
+    max-width: 380px;
+  }
+  .chapter-svg {
+    max-width: 380px;
+  }
+  .chapter-text-col {
+    padding-left: 2rem;
+    min-height: 240px;
+  }
+  .chapter-heading {
+    font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+    margin-bottom: 1rem;
+  }
+  .chapter-body {
+    font-size: 0.92rem;
+  }
+
   .nav-container {
     padding: 0 2.5rem;
   }
+
   
   .nav-links {
     gap: 2rem;
@@ -2110,7 +2969,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 
   /* Story section responsive adjustments */
   .story-section {
-    padding: 10rem 0;
+    padding: 4.5rem 0;
   }
 
   .story-heading {
@@ -2148,7 +3007,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 
   /* Timeline responsive adjustments */
   .timeline-section {
-    padding: 10rem 0;
+    padding: 4.5rem 0;
   }
 
   .timeline-container {
@@ -2184,7 +3043,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 
   /* Case Study responsive adjustments */
   .case-study-section {
-    padding: 10rem 0;
+    padding: 4.5rem 0;
   }
 
   .case-study-container {
@@ -2201,7 +3060,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
   }
 
   .case-visual-wrapper {
-    margin-bottom: 6rem;
+    margin-bottom: 3.5rem;
   }
 
   .case-browser-content {
@@ -2251,7 +3110,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 
   /* Services responsive adjustments */
   .services-section {
-    padding: 10rem 0;
+    padding: 4.5rem 0;
   }
 
   .services-container {
@@ -2281,7 +3140,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 
   /* Value Prop responsive adjustments */
   .valprop-section {
-    padding: 10rem 0;
+    padding: 4.5rem 0;
   }
 
   .valprop-container {
@@ -2321,7 +3180,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 
   /* Testimonials responsive adjustments */
   .testimonials-section {
-    padding: 10rem 0;
+    padding: 4.5rem 0;
   }
 
   .testimonials-container {
@@ -2391,7 +3250,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
   }
 
   .closing-content {
-    margin-bottom: 5.5rem;
+    margin-bottom: 3rem;
   }
 
   /* Standalone footer adjustments */
@@ -2438,12 +3297,112 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 }
 
 @media (max-width: 768px) {
-  .header {
-    padding: 1.5rem 0;
+  /* Enforce 100% width on GSAP pin-spacer on mobile */
+  .pin-spacer,
+  .pin-spacer #scroll-story-section,
+  .chapter-pin-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
   }
-  
+
+  /* Scroll story: stack vertically on mobile */
+  .chapter-pin-stage {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 1.25rem 2.5rem;
+    gap: 1rem;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .chapter-svg-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .chapter-illus-container {
+    max-width: 240px;    /* 240px mobile illustration cap per spec */
+    width: 100%;
+    height: 180px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .chapter-svg {
+    max-width: 240px;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .chapter-text-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 180px;
+    padding-left: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+
+  .chapter-text-slide {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .chapter-eyebrow {
+    font-size: 0.65rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .chapter-heading {
+    font-size: clamp(1.5rem, 6.5vw, 2.1rem);
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+
+  .chapter-body {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .chapter-progress {
+    bottom: 1.2rem;
+  }
+
+  .header {
+    padding: 1.3rem 0;
+  }
+
   .header.scrolled {
     padding: 1rem 0;
+  }
+  
+  .header.navbar-dark .mobile-menu-btn .bar {
+    background-color: #FFFFFF;
   }
   
   .nav-container {
@@ -2453,7 +3412,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
   .nav-links {
     display: none;
   }
-  
+
   .cta-button {
     display: none;
   }
@@ -2461,11 +3420,28 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
   .mobile-menu-btn {
     display: flex;
   }
+
+  .mobile-menu-overlay {
+    background-color: #FAF8F5;
+  }
+
+  .mobile-nav-link {
+    color: #111111;
+  }
+
+  .mobile-nav-link.mobile-cta {
+    background-color: #111111;
+    color: #FFFFFF;
+    border: 1px solid #111111;
+  }
+
   
   .hero-section {
-    padding-top: 8rem;
-    padding-bottom: 6rem;
+    padding-top: 7rem;
+    padding-bottom: 4rem;
+    overflow: hidden;
   }
+
   
   .hero-container {
     padding: 0 1.5rem;
@@ -2768,7 +3744,7 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
   }
 
   .closing-content {
-    margin-bottom: 4.5rem;
+    margin-bottom: 2.5rem;
   }
 
   .closing-headline {
@@ -2821,4 +3797,204 @@ html.light-theme ::-webkit-scrollbar-thumb:hover {
 
 
 
+/* =============================================================
+   SVG Illustration Section — Premium Editorial Draw Animation
+   ============================================================= */
 
+.illustration-section {
+  padding: 5rem 2rem 5rem;
+  background-color: var(--bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.illustration-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* Editorial header block */
+.illustration-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 5rem;
+  max-width: 640px;
+}
+
+.illustration-tag {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.illustration-heading {
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.illustration-heading em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.illustration-subtext {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 480px;
+}
+
+/* SVG wrapper — centred, constrained width */
+#storefront-svg-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  /* Fade-in container opacity so no fill flash on load */
+  opacity: 1;
+}
+
+/* ── Stroke-only rules ──────────────────────────────────────── */
+/* All paths inherit stroke from CSS; fills are suppressed.      */
+#storefront-svg-wrapper svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+#storefront-svg-wrapper svg path,
+#storefront-svg-wrapper svg rect,
+#storefront-svg-wrapper svg circle,
+#storefront-svg-wrapper svg ellipse,
+#storefront-svg-wrapper svg line,
+#storefront-svg-wrapper svg polyline,
+#storefront-svg-wrapper svg polygon {
+  fill:         none !important;
+  stroke:       var(--accent);
+  stroke-width: 1.2px;
+  stroke-linecap:  round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Door group — enable GPU compositing for smooth rotation */
+.svg-door-group {
+  will-change: transform;
+}
+
+/* Thin rule above section for editorial separation */
+.illustration-section::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 1px;
+  background-color: var(--border-color);
+  margin-bottom: 5rem;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .illustration-section {
+    padding: 6rem 1.5rem 6rem;
+  }
+
+  .illustration-header {
+    margin-bottom: 3rem;
+  }
+
+  .illustration-section::before {
+    margin-bottom: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .illustration-section {
+    padding: 4rem 1rem 4rem;
+  }
+}
+
+
+/* =============================================================
+   Per-SVG Animation Overrides & Idle Element Styles
+   ============================================================= */
+
+/* ── SVG2: Confusion ─────────────────────────────────────────
+   Browser windows drift group                                  */
+.svg-browser-drift,
+.svg-qmarks {
+  will-change: transform, opacity;
+}
+
+/* ── SVG3: CTA — Gold Spark ──────────────────────────────────
+   The spark is a programmatically created <circle>.
+   Override stroke rules so it fills with accent gold.         */
+.svg-gold-spark {
+  fill:            var(--accent) !important;
+  stroke:          none !important;
+  pointer-events:  none;
+  will-change:     opacity, transform;
+}
+
+/* ── SVG3: Hand & Button groups ─────────────────────────────  */
+.svg-hand-group,
+.svg-button-group {
+  will-change: transform;
+}
+
+/* ── SVG4: Clock hand & loading bar ─────────────────────────  */
+.svg-clock-hand {
+  will-change: transform;
+}
+
+.svg-eye-group {
+  will-change: transform;
+}
+
+/* ── All SVG wrappers — consistent per-instance IDs ─────────  */
+#svg2-wrapper svg path,
+#svg2-wrapper svg rect,
+#svg2-wrapper svg circle,
+#svg2-wrapper svg ellipse,
+#svg2-wrapper svg line,
+#svg2-wrapper svg polyline,
+#svg2-wrapper svg polygon,
+#svg3-wrapper svg path,
+#svg3-wrapper svg rect,
+#svg3-wrapper svg circle,
+#svg3-wrapper svg ellipse,
+#svg3-wrapper svg line,
+#svg3-wrapper svg polyline,
+#svg3-wrapper svg polygon,
+#svg4-wrapper svg path,
+#svg4-wrapper svg rect,
+#svg4-wrapper svg circle,
+#svg4-wrapper svg ellipse,
+#svg4-wrapper svg line,
+#svg4-wrapper svg polyline,
+#svg4-wrapper svg polygon {
+  fill:         none !important;
+  stroke:       var(--accent);
+  stroke-width: 1.2px;
+  stroke-linecap:  round;
+  stroke-linejoin: round;
+  vector-effect:   non-scaling-stroke;
+}
+
+/* Spark circle: override fill back to accent (the !important from above
+   would suppress it — use a more specific selector to win the cascade)  */
+#svg3-wrapper svg .svg-gold-spark,
+#svg3-wrapper svg circle.svg-gold-spark {
+  fill:   var(--accent) !important;
+  stroke: none !important;
+}

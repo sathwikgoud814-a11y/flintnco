@@ -1,6 +1,9 @@
+﻿import './scroll-story.js';
+
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Floating Header Glass Effect on Scroll
+  // 1. Dynamic Adaptive Navigation Bar (Light Paper State & Dark CTA Transition)
   const header = document.getElementById('header');
+  const ctaSection = document.getElementById('inquire');
   
   const handleScroll = () => {
     if (window.scrollY > 30) {
@@ -11,8 +14,24 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   window.addEventListener('scroll', handleScroll);
-  // Trigger initially in case page loads scrolled down
   handleScroll();
+
+  // IntersectionObserver: Toggles .navbar-dark smoothly when 45% of CTA section enters/leaves viewport
+  if (ctaSection && header && 'IntersectionObserver' in window) {
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          header.classList.add('navbar-dark');
+        } else {
+          header.classList.remove('navbar-dark');
+        }
+      });
+    }, {
+      threshold: 0.45
+    });
+
+    navObserver.observe(ctaSection);
+  }
 
   // 2. Mobile Navigation Toggle
   const mobileToggle = document.getElementById('mobile-toggle');
@@ -24,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileToggle.classList.toggle('active');
       mobileMenu.classList.toggle('active');
       if (mobileMenu.classList.contains('active')) {
-        document.body.style.overflow = 'hidden'; // Lock background scrolling
+        document.body.style.overflow = 'hidden';
       } else {
         document.body.style.overflow = '';
       }
@@ -32,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     mobileToggle.addEventListener('click', toggleMenu);
 
-    // Close menu when a link is clicked
     mobileNavLinks.forEach(link => {
       link.addEventListener('click', () => {
         mobileToggle.classList.remove('active');
@@ -41,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
   // 3. Floating Mockup 3D Mouse Parallax (Apple/Linear spring effect)
   const hero = document.getElementById('hero');
   const browser = document.getElementById('parallax-browser');
@@ -51,37 +70,25 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentX = 0;
     let currentY = 0;
 
-    // Detect mouse move in hero area
     hero.addEventListener('mousemove', (e) => {
       const rect = hero.getBoundingClientRect();
-      
-      // Calculate normalized coordinates (-1 to 1) from container center
       const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
       const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-      
-      // Max displacement parameters (12px shift in X/Y)
       mouseX = x * 12;
       mouseY = y * 12;
     });
 
-    // Reset translation when mouse leaves hero
     hero.addEventListener('mouseleave', () => {
       mouseX = 0;
       mouseY = 0;
     });
 
-    // High performance spring interpolation animation loop
     const animate = () => {
-      // Linear interpolation (lerp) for spring dampening
       currentX += (mouseX - currentX) * 0.08;
       currentY += (mouseY - currentY) * 0.08;
-      
-      // Rotations are proportional to translational offset
-      const rotateY = currentX * 0.25;  // Max 3deg rotation
-      const rotateX = -currentY * 0.25; // Max -3deg rotation
-      
+      const rotateY = currentX * 0.25;
+      const rotateX = -currentY * 0.25;
       browser.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      
       requestAnimationFrame(animate);
     };
 
@@ -96,19 +103,17 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
-          // Once revealed, we don't need to observe it anymore
           observer.unobserve(entry.target);
         }
       });
     }, {
       root: null,
-      threshold: 0.15, // Trigger when 15% of the element is visible
-      rootMargin: '0px 0px -50px 0px' // Slightly offset trigger point
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
     });
 
     revealElements.forEach(el => revealObserver.observe(el));
   } else {
-    // Fallback if IntersectionObserver isn't supported (force show)
     revealElements.forEach(el => el.classList.add('revealed'));
   }
 
@@ -119,15 +124,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (question) {
       question.addEventListener('click', () => {
         const isActive = item.classList.contains('active');
-        
-        // Close other active items to preserve layout whitespace
         faqItems.forEach(otherItem => {
           if (otherItem !== item) {
             otherItem.classList.remove('active');
           }
         });
-        
-        // Toggle the clicked item
         if (isActive) {
           item.classList.remove('active');
         } else {
@@ -137,51 +138,160 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 6. Adaptive Dark / Light Mode Switcher
-  const themeToggle = document.getElementById('theme-toggle');
-  const themeToggleMobile = document.getElementById('theme-toggle-mobile');
-  const htmlElement = document.documentElement;
+  // 6. "FORGED FLINT" NATURAL FRACTURE TRANSITION & STAGGERED CTA REVEAL
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
 
-  const setTheme = (isLight) => {
-    if (isLight) {
-      htmlElement.classList.add('light-theme');
-      localStorage.setItem('theme', 'light');
-      if (themeToggleMobile) {
-        const textSpan = themeToggleMobile.querySelector('.toggle-theme-text-mobile');
-        if (textSpan) textSpan.textContent = 'Dark Mode';
-      }
-    } else {
-      htmlElement.classList.remove('light-theme');
-      localStorage.setItem('theme', 'dark');
-      if (themeToggleMobile) {
-        const textSpan = themeToggleMobile.querySelector('.toggle-theme-text-mobile');
-        if (textSpan) textSpan.textContent = 'Light Mode';
-      }
+    if (ctaSection) {
+      // Timeline 1: Forged Flint Fracture Line Draw & 8-16px Gap Separation (Scrubbed with Scroll)
+      const fractureTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ctaSection,
+          start: 'top 88%',
+          end: 'top 40%',
+          scrub: 0.6
+        }
+      });
+
+      // 1. Single Thin Fracture Line Draws Across 85% Viewport
+      fractureTl.fromTo('.flint-crack-base',
+        { strokeDashoffset: 1000 },
+        { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }
+      );
+
+      fractureTl.fromTo('.flint-crack-highlight',
+        { strokeDashoffset: 1000 },
+        { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' },
+        '-=0.3'
+      );
+
+      // 2. Tiny Sparks (4 warm gold sparks) travel & fade naturally along fracture
+      fractureTl.fromTo('.flint-spark',
+        { opacity: 0, x: -10 },
+        { opacity: 0.9, x: 20, duration: 0.25, stagger: 0.05, ease: 'power2.out' },
+        '-=0.2'
+      ).to('.flint-spark',
+        { opacity: 0, duration: 0.2 },
+        '-=0.05'
+      );
+
+      // 3. Controlled Fracture Separation (Max opening 12px)
+      fractureTl.to('.flint-gap-reveal',
+        { height: 12, duration: 0.35, ease: 'power2.out' },
+        '-=0.15'
+      );
+
+      // Timeline 2: Staggered CTA Reveal (Triggers when ~70% of dark section is visible)
+      const ctaTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ctaSection,
+          start: 'top 30%', // Triggers when ~70% of dark section enters
+          toggleActions: 'play none none reverse'
+        }
+      });
+
+      // READY TO START Eyebrow
+      ctaTl.fromTo('.cta-anim-eyebrow',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+      );
+
+      // Headline Text (Opacity 0->1, translateY 30px->0, 0.8s)
+      ctaTl.fromTo('.cta-white-text',
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'cubic-bezier(0.22, 0.61, 0.36, 1)' },
+        '-=0.3'
+      );
+
+      // Gold Accent Words (120ms later)
+      ctaTl.fromTo('.cta-gold-text',
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'cubic-bezier(0.22, 0.61, 0.36, 1)' },
+        '-=0.68'
+      );
+
+      // Supporting Copy
+      ctaTl.fromTo('.cta-anim-subtext',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+        '-=0.4'
+      );
+
+      // CTA Button
+      ctaTl.fromTo('.cta-anim-btn',
+        { opacity: 0, scale: 0.96 },
+        { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.2)' },
+        '-=0.3'
+      );
     }
-  };
-
-  // Read initial preference
-  const savedTheme = localStorage.getItem('theme');
-  const userPrefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-  
-  if (savedTheme === 'light' || (!savedTheme && userPrefersLight)) {
-    setTheme(true);
-  } else {
-    setTheme(false);
   }
 
-  // Bind click handlers
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const isCurrentlyLight = htmlElement.classList.contains('light-theme');
-      setTheme(!isCurrentlyLight);
-    });
+  // 7. WARM GOLD PARTICLES DRIFTING INSIDE FORGED DARK SURFACE (#cta-particle-canvas)
+  const particleCanvas = document.getElementById('cta-particle-canvas');
+  if (particleCanvas) {
+    const ctx = particleCanvas.getContext('2d');
+    let width = (particleCanvas.width = particleCanvas.offsetWidth || window.innerWidth);
+    let height = (particleCanvas.height = particleCanvas.offsetHeight || 600);
+
+    const resize = () => {
+      width = particleCanvas.width = particleCanvas.offsetWidth || window.innerWidth;
+      height = particleCanvas.height = particleCanvas.offsetHeight || 600;
+    };
+    window.addEventListener('resize', resize);
+
+    const NUM_PARTICLES = 16;
+    const particles = [];
+
+    for (let i = 0; i < NUM_PARTICLES; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.5 + 0.6,
+        alpha: Math.random() * 0.22 + 0.08,
+        speedY: Math.random() * 0.30 + 0.10,
+        sineOffset: Math.random() * Math.PI * 2,
+        sineSpeed: Math.random() * 0.012 + 0.004
+      });
+    }
+
+    const drawParticles = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach(p => {
+        p.y -= p.speedY;
+        p.sineOffset += p.sineSpeed;
+        p.x += Math.sin(p.sineOffset) * 0.25;
+
+        if (p.y < -10) {
+          p.y = height + 10;
+          p.x = Math.random() * width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212, 175, 55, ${p.alpha})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(drawParticles);
+    };
+
+    drawParticles();
   }
 
-  if (themeToggleMobile) {
-    themeToggleMobile.addEventListener('click', () => {
-      const isCurrentlyLight = htmlElement.classList.contains('light-theme');
-      setTheme(!isCurrentlyLight);
+  // 8. INTERACTIVE CASE STUDY VISUAL STORYTELLER (Problem -> Strategy -> Execution -> Outcome)
+  const storyBtns = document.querySelectorAll('.case-story-btn');
+  const caseMockup = document.getElementById('case-mockup');
+
+  if (storyBtns.length > 0 && caseMockup) {
+    storyBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const stage = btn.getAttribute('data-stage');
+        storyBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        caseMockup.className = 'case-browser-mockup stage-' + stage;
+      });
     });
   }
 });
