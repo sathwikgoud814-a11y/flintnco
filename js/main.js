@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 0. Prefers-Reduced-Motion Check
   // -------------------------------------------------------------
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const IR = { immediateRender: false };
 
   // -------------------------------------------------------------
   // 1. Lenis Smooth Scroll Engine + GSAP Ticker Synchronization
@@ -462,10 +463,12 @@ document.addEventListener('DOMContentLoaded', () => {
           '-=0.5'
         );
       }
-    }    // I. CTA SECTION REVEAL & EMBER SEQUENCE
+    }
+
+    // I. CTA SECTION REVEAL & EMBER SEQUENCE
     if (ctaSection) {
       const fractureTl = gsap.timeline({
-        scrollTrigger: { trigger: ctaSection, start: 'top 88%', end: 'top 40%', scrub: 0.6 }
+        scrollTrigger: { trigger: ctaSection, start: 'top 92%', end: 'top 40%', scrub: 0.6 }
       });
       fractureTl
         .fromTo('.flint-crack-base',      { ...IR, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' })
@@ -473,7 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
       const ctaTl = gsap.timeline({
-        scrollTrigger: { trigger: ctaSection, start: 'top 82%', toggleActions: 'play reverse play reverse' }
+        scrollTrigger: { trigger: ctaSection, start: 'top 90%', toggleActions: 'play reverse play reverse' }
       });
       ctaTl
         // 1. READY TO START (eyebrow)
