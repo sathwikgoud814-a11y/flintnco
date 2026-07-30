@@ -476,7 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
       const ctaTl = gsap.timeline({
-        scrollTrigger: { trigger: ctaSection, start: 'top 90%', toggleActions: 'play reverse play reverse' }
+        scrollTrigger: { trigger: ctaSection, start: 'top 90%', toggleActions: 'play none none none' }
       });
       ctaTl
         // 1. READY TO START (eyebrow)

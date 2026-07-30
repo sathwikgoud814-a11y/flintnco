@@ -42,6 +42,13 @@
         
         paths.forEach(function (el, idx) {
           try {
+            var d = (el.getAttribute('d') || '').trim();
+            // Filter out stray outer canvas boundary frame paths (top edge M0 0 / M0,0 scribbles)
+            if (d.indexOf('M0 0') === 0 || d.indexOf('M0,0') === 0 || d.indexOf('M1 0') === 0 || d.indexOf('M0 1') === 0) {
+              el.style.display = 'none';
+              return;
+            }
+
             var len = el.getTotalLength();
             if (len > 0) {
               var rawFill = el.getAttribute('fill');
