@@ -36,23 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
       touchMultiplier: 1.5,
     });
 
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger);
 
-      // Connect Lenis scroll updates to GSAP ScrollTrigger
-      lenis.on('scroll', ScrollTrigger.update);
-
-      // Synchronize GSAP high-precision ticker with Lenis RAF
+      // Drive Lenis ONLY through GSAP ticker — no separate RAF loop
       gsap.ticker.add((time) => {
         lenis.raf(time * 1000);
       });
       gsap.ticker.lagSmoothing(0);
+
+      // Keep ScrollTrigger in sync with Lenis scroll position
+      lenis.on('scroll', ScrollTrigger.update);
     }
   }
 
@@ -196,10 +190,15 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.registerPlugin(ScrollTrigger);
 
     if (prefersReducedMotion) {
-      // Bypasses all motion timelines for users requesting reduced motion
       gsap.globalTimeline.timeScale(100);
       return;
     }
+
+    // immediateRender: false is CRITICAL on every fromTo from-vars.
+    // Without it, GSAP applies opacity:0 to ALL elements immediately at
+    // DOMContentLoaded — before any ScrollTrigger fires. Elements remain
+    // invisible and create blank whitespace voids throughout the page.
+    const IR = { immediateRender: false };
 
     // A. HERO SECTION REVEAL
     const heroTl = gsap.timeline({
@@ -211,46 +210,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     heroTl.fromTo('.hero-headline',
-      { opacity: 0, y: 35 },
+      { ...IR, opacity: 0, y: 35 },
       { opacity: 1, y: 0, duration: 1.0, ease: 'power4.out' }
     ).fromTo('.hero-headline em',
-      { opacity: 0, y: 15 },
+      { ...IR, opacity: 0, y: 15 },
       { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' },
       '-=0.7'
     ).fromTo('.hero-paragraph',
-      { opacity: 0, y: 25 },
+      { ...IR, opacity: 0, y: 25 },
       { opacity: 1, y: 0, duration: 0.85, ease: 'power4.out' },
       '-=0.6'
     ).fromTo('.btn-primary',
-      { opacity: 0, scale: 0.96, y: 20 },
+      { ...IR, opacity: 0, scale: 0.96, y: 20 },
       { opacity: 1, scale: 1, y: 0, duration: 0.75, ease: 'power4.out' },
       '-=0.5'
     ).fromTo('.btn-secondary',
-      { opacity: 0, scale: 0.96, y: 20 },
+      { ...IR, opacity: 0, scale: 0.96, y: 20 },
       { opacity: 1, scale: 1, y: 0, duration: 0.75, ease: 'power4.out' },
       '-=0.62'
     ).fromTo('#parallax-browser',
-      { opacity: 0, y: 40 },
+      { ...IR, opacity: 0, y: 40 },
       { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out' },
       '-=0.7'
     ).fromTo('.hero-scroll-indicator',
-      { opacity: 0, y: 15 },
+      { ...IR, opacity: 0, y: 15 },
       { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' },
       '-=0.4'
     );
-
 
     // B. TRUST TICKER SECTION REVEAL
     const trustElements = gsap.utils.toArray('.trust-item, .trust-label');
     if (trustElements.length > 0) {
       gsap.fromTo(trustElements,
-        { opacity: 0, y: 25 },
+        { ...IR, opacity: 0, y: 25 },
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.06,
-          ease: 'power4.out',
+          opacity: 1, y: 0, duration: 0.7, stagger: 0.06, ease: 'power4.out',
           scrollTrigger: {
             trigger: '.trust-section',
             start: 'top 85%',
@@ -260,126 +254,73 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     }
 
-    // C. PROCESS / TIMELINE SECTION REVEAL (Individual Phase Card Micro-Animations)
+    // C. PROCESS / TIMELINE SECTION REVEAL
     const timelineLeft = document.querySelector('.timeline-left');
     const trackLine = document.querySelector('.timeline-track-line');
     const timelineSteps = gsap.utils.toArray('.timeline-step');
 
     if (timelineLeft) {
       gsap.fromTo(timelineLeft,
-        { opacity: 0, y: 35 },
+        { ...IR, opacity: 0, y: 35 },
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: 'power4.out',
-          scrollTrigger: {
-            trigger: '#process',
-            start: 'top 80%',
-            toggleActions: 'play reverse play reverse'
-          }
+          opacity: 1, y: 0, duration: 0.9, ease: 'power4.out',
+          scrollTrigger: { trigger: '#process', start: 'top 80%', toggleActions: 'play reverse play reverse' }
         }
       );
     }
 
     if (trackLine) {
       gsap.fromTo(trackLine,
-        { scaleY: 0, transformOrigin: 'top center' },
+        { ...IR, scaleY: 0, transformOrigin: 'top center' },
         {
-          scaleY: 1,
-          duration: 1.2,
-          ease: 'power2.inOut',
-          scrollTrigger: {
-            trigger: '.timeline-right',
-            start: 'top 80%',
-            toggleActions: 'play reverse play reverse'
-          }
+          scaleY: 1, duration: 1.2, ease: 'power2.inOut',
+          scrollTrigger: { trigger: '.timeline-right', start: 'top 80%', toggleActions: 'play reverse play reverse' }
         }
       );
     }
 
     if (timelineSteps.length > 0) {
       timelineSteps.forEach((step) => {
-        const stepNum = step.querySelector('.step-meta, .step-num');
+        const stepNum   = step.querySelector('.step-meta');
         const stepTitle = step.querySelector('.step-title');
-        const stepDesc = step.querySelector('.step-desc');
-        const stepDot = step.querySelector('.step-dot');
+        const stepDesc  = step.querySelector('.step-desc');
+        const stepDot   = step.querySelector('.step-dot');
 
         const stepTl = gsap.timeline({
           scrollTrigger: {
             trigger: step,
             start: 'top 85%',
             toggleActions: 'play reverse play reverse',
-            onEnter: () => step.classList.add('revealed'),
+            onEnter:     () => step.classList.add('revealed'),
             onLeaveBack: () => step.classList.remove('revealed')
           }
         });
 
-        if (stepDot) {
-          stepTl.fromTo(stepDot,
-            { scale: 0.5, opacity: 0 },
-            { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.5)' }
-          );
-        }
-
-        if (stepNum) {
-          stepTl.fromTo(stepNum,
-            { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' },
-            '-=0.2'
-          );
-        }
-
-        if (stepTitle) {
-          stepTl.fromTo(stepTitle,
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.75, ease: 'power4.out' },
-            '-=0.35'
-          );
-        }
-
-        if (stepDesc) {
-          stepTl.fromTo(stepDesc,
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' },
-            '-=0.45'
-          );
-        }
+        if (stepDot)   stepTl.fromTo(stepDot,   { ...IR, scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.5)' });
+        if (stepNum)   stepTl.fromTo(stepNum,   { ...IR, opacity: 0, y: 15 },      { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' }, '-=0.2');
+        if (stepTitle) stepTl.fromTo(stepTitle, { ...IR, opacity: 0, y: 30 },      { opacity: 1, y: 0, duration: 0.75, ease: 'power4.out' }, '-=0.35');
+        if (stepDesc)  stepTl.fromTo(stepDesc,  { ...IR, opacity: 0, y: 20 },      { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, '-=0.45');
       });
     }
-
 
     // D. CASE STUDY SECTION REVEAL
     const caseSection = document.getElementById('work');
     if (caseSection) {
       const caseTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: caseSection,
-          start: 'top 80%',
-          toggleActions: 'play reverse play reverse'
-        }
+        scrollTrigger: { trigger: caseSection, start: 'top 80%', toggleActions: 'play reverse play reverse' }
       });
-
       caseTl.fromTo(['.case-header', '.case-story-nav', '.case-visual-wrapper'],
-        { opacity: 0, y: 35 },
+        { ...IR, opacity: 0, y: 35 },
         { opacity: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'expo.out' }
       );
 
       const narrativeCols = gsap.utils.toArray('.narrative-col');
       if (narrativeCols.length > 0) {
         gsap.fromTo(narrativeCols,
-          { opacity: 0, y: 30 },
+          { ...IR, opacity: 0, y: 30 },
           {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.08,
-            ease: 'power4.out',
-            scrollTrigger: {
-              trigger: '.case-narrative-grid',
-              start: 'top 85%',
-              toggleActions: 'play reverse play reverse'
-            }
+            opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'power4.out',
+            scrollTrigger: { trigger: '.case-narrative-grid', start: 'top 85%', toggleActions: 'play reverse play reverse' }
           }
         );
       }
@@ -388,124 +329,120 @@ document.addEventListener('DOMContentLoaded', () => {
     // E. SERVICES SECTION — Per-card layered reveal
     const serviceCards = gsap.utils.toArray('.service-card');
     if (serviceCards.length > 0) {
-
-      // Header reveal first
       gsap.fromTo('.services-header',
-        { opacity: 0, y: 30 },
+        { ...IR, opacity: 0, y: 30 },
         {
           opacity: 1, y: 0, duration: 0.85, ease: 'power4.out',
-          scrollTrigger: {
-            trigger: '.services-section',
-            start: 'top 80%',
-            toggleActions: 'play reverse play reverse'
-          }
+          scrollTrigger: { trigger: '.services-section', start: 'top 80%', toggleActions: 'play reverse play reverse' }
         }
       );
 
-      // Each card: sequential sub-timeline triggered individually
-      serviceCards.forEach((card, i) => {
-        const idx    = card.querySelector('.service-index');
-        const title  = card.querySelector('.service-title');
-        const desc   = card.querySelector('.service-desc');
-        const tags   = gsap.utils.toArray('.outcome-tag', card);
-        const link   = card.querySelector('.service-link');
+      serviceCards.forEach((card) => {
+        const idx   = card.querySelector('.service-index');
+        const title = card.querySelector('.service-title');
+        const desc  = card.querySelector('.service-desc');
+        const tags  = gsap.utils.toArray('.outcome-tag', card);
+        const link  = card.querySelector('.service-link');
 
         const cardTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 88%',
-            toggleActions: 'play reverse play reverse'
-          }
+          scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play reverse play reverse' }
         });
 
-        // 1. Card container lifts into view
-        cardTl.fromTo(card,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' }
-        );
+        cardTl.fromTo(card,  { ...IR, opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' });
+        if (idx)   cardTl.fromTo(idx,   { ...IR, opacity: 0 },         { opacity: 1, duration: 0.45, ease: 'power2.out' }, '-=0.6');
+        if (title) cardTl.fromTo(title, { ...IR, opacity: 0, y: 22 },  { opacity: 1, y: 0, duration: 0.65, ease: 'power4.out' }, '-=0.35');
+        if (desc)  cardTl.fromTo(desc,  { ...IR, opacity: 0, y: 14 },  { opacity: 1, y: 0, duration: 0.55, ease: 'power4.out' }, '-=0.4');
+        if (tags.length > 0) cardTl.fromTo(tags, { ...IR, opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.07, ease: 'power3.out' }, '-=0.3');
+        if (link)  cardTl.fromTo(link,  { ...IR, opacity: 0, y: 8 },   { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.25');
+      });
+    }
 
-        // 2. Index label fades
-        if (idx) {
-          cardTl.fromTo(idx,
-            { opacity: 0 },
-            { opacity: 1, duration: 0.45, ease: 'power2.out' },
-            '-=0.6'
+    // F. PHILOSOPHY / VALUE PROP SECTION — Per-pillar card reveal
+    const pillarBlocks = gsap.utils.toArray('.pillar-block');
+    if (pillarBlocks.length > 0) {
+      gsap.fromTo('.valprop-header',
+        { ...IR, opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0, duration: 0.85, ease: 'power4.out',
+          scrollTrigger: { trigger: '#philosophy', start: 'top 80%', toggleActions: 'play reverse play reverse' }
+        }
+      );
+
+      pillarBlocks.forEach((pillar) => {
+        const divider   = pillar.querySelector('.pillar-divider');
+        const num       = pillar.querySelector('.pillar-num');
+        const svg       = pillar.querySelector('.pillar-svg');
+        const title     = pillar.querySelector('.pillar-title');
+        const underline = pillar.querySelector('.gold-underline');
+        const desc      = pillar.querySelector('.pillar-desc');
+
+        const pillarTl = gsap.timeline({
+          scrollTrigger: { trigger: pillar, start: 'top 85%', toggleActions: 'play reverse play reverse' }
+        });
+
+        // 1. Editorial divider grows horizontally
+        if (divider) {
+          pillarTl.fromTo(divider,
+            { ...IR, scaleX: 0, transformOrigin: 'left center' },
+            { scaleX: 1, duration: 0.8, ease: 'power3.out' }
           );
         }
 
-        // 3. Title slides up
-        if (title) {
-          cardTl.fromTo(title,
-            { opacity: 0, y: 22 },
-            { opacity: 1, y: 0, duration: 0.65, ease: 'power4.out' },
-            '-=0.35'
-          );
-        }
-
-        // 4. Description fades
-        if (desc) {
-          cardTl.fromTo(desc,
-            { opacity: 0, y: 14 },
+        // 2. Pillar number slides up & fades
+        if (num) {
+          pillarTl.fromTo(num,
+            { ...IR, opacity: 0, y: 14 },
             { opacity: 1, y: 0, duration: 0.55, ease: 'power4.out' },
+            divider ? '-=0.55' : '+=0'
+          );
+        }
+
+        // 3. Vector SVG icon scales gently
+        if (svg) {
+          pillarTl.fromTo(svg,
+            { ...IR, opacity: 0, scale: 0.85 },
+            { opacity: 0.55, scale: 1, duration: 0.5, ease: 'power2.out' },
             '-=0.4'
           );
         }
 
-        // 5. Outcome tags stagger in
-        if (tags.length > 0) {
-          cardTl.fromTo(tags,
-            { opacity: 0, x: -8 },
-            { opacity: 1, x: 0, duration: 0.4, stagger: 0.07, ease: 'power3.out' },
-            '-=0.3'
+        // 4. Headline text reveals
+        if (title) {
+          pillarTl.fromTo(title,
+            { ...IR, opacity: 0, y: 22 },
+            { opacity: 1, y: 0, duration: 0.7, ease: 'power4.out' },
+            '-=0.35'
           );
         }
 
-        // 6. CTA link fades up last
-        if (link) {
-          cardTl.fromTo(link,
-            { opacity: 0, y: 8 },
-            { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' },
-            '-=0.25'
+        // 5. Gold underline reveals
+        if (underline) {
+          pillarTl.fromTo(underline,
+            { ...IR, scaleX: 0, transformOrigin: 'left center' },
+            { scaleX: 1, duration: 0.6, ease: 'expo.out' },
+            '-=0.45'
+          );
+        }
+
+        // 6. Description text fades in
+        if (desc) {
+          pillarTl.fromTo(desc,
+            { ...IR, opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' },
+            '-=0.35'
           );
         }
       });
-    }
-
-
-    // F. PHILOSOPHY / VALUE PROP SECTION REVEAL
-    const valpropRows = gsap.utils.toArray('.valprop-row');
-    if (valpropRows.length > 0) {
-      const valpropTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '#philosophy',
-          start: 'top 80%',
-          toggleActions: 'play reverse play reverse'
-        }
-      });
-
-      valpropTl.fromTo('.valprop-header',
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' }
-      ).fromTo(valpropRows,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.85, stagger: 0.12, ease: 'power4.out' },
-        '-=0.4'
-      );
     }
 
     // G. TESTIMONIALS & BEFORE/AFTER SHOWCASE REVEAL
     const testimonialsSection = document.querySelector('.testimonials-section');
     if (testimonialsSection) {
       const testTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: testimonialsSection,
-          start: 'top 80%',
-          toggleActions: 'play reverse play reverse'
-        }
+        scrollTrigger: { trigger: testimonialsSection, start: 'top 80%', toggleActions: 'play reverse play reverse' }
       });
-
-      testTl.fromTo(['.testimonials-header', '.ba-showcase', '.testimonial-card'],
-        { opacity: 0, y: 35 },
+      testTl.fromTo(['.testimonials-header', '.ba-showcase'],
+        { ...IR, opacity: 0, y: 35 },
         { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'expo.out' }
       );
     }
@@ -515,115 +452,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const faqItemsArr = gsap.utils.toArray('.faq-item');
     if (faqSection) {
       const faqTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: faqSection,
-          start: 'top 80%',
-          toggleActions: 'play reverse play reverse'
-        }
+        scrollTrigger: { trigger: faqSection, start: 'top 80%', toggleActions: 'play reverse play reverse' }
       });
-
       faqTl.fromTo('.faq-left',
-        { opacity: 0, y: 35 },
+        { ...IR, opacity: 0, y: 35 },
         { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' }
       );
-
       if (faqItemsArr.length > 0) {
         faqTl.fromTo(faqItemsArr,
-          { opacity: 0, y: 25 },
+          { ...IR, opacity: 0, y: 25 },
           { opacity: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power4.out' },
           '-=0.5'
         );
       }
     }
 
-    // I. "FORGED FLINT" FRACTURE TRANSITION & STAGGERED CTA REVEAL
+    // I. CTA SECTION REVEAL
     if (ctaSection) {
       const fractureTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ctaSection,
-          start: 'top 88%',
-          end: 'top 40%',
-          scrub: 0.6
-        }
+        scrollTrigger: { trigger: ctaSection, start: 'top 88%', end: 'top 40%', scrub: 0.6 }
       });
+      fractureTl
+        .fromTo('.flint-crack-base',      { ...IR, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' })
+        .fromTo('.flint-crack-highlight', { ...IR, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3')
+        .fromTo('.flint-spark',           { ...IR, opacity: 0, x: -10 },     { opacity: 0.9, x: 20, duration: 0.25, stagger: 0.05, ease: 'power2.out' }, '-=0.2')
+        .to('.flint-spark',               { opacity: 0, duration: 0.2 }, '-=0.05')
+        .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
-      fractureTl.fromTo('.flint-crack-base',
-        { strokeDashoffset: 1000 },
-        { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }
-      );
-
-      fractureTl.fromTo('.flint-crack-highlight',
-        { strokeDashoffset: 1000 },
-        { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' },
-        '-=0.3'
-      );
-
-      fractureTl.fromTo('.flint-spark',
-        { opacity: 0, x: -10 },
-        { opacity: 0.9, x: 20, duration: 0.25, stagger: 0.05, ease: 'power2.out' },
-        '-=0.2'
-      ).to('.flint-spark',
-        { opacity: 0, duration: 0.2 },
-        '-=0.05'
-      );
-
-      fractureTl.to('.flint-gap-reveal',
-        { height: 12, duration: 0.35, ease: 'power2.out' },
-        '-=0.15'
-      );
-
-      // Staggered CTA Reveal (Reverses when scrolling back up!)
       const ctaTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ctaSection,
-          start: 'top 35%',
-          toggleActions: 'play reverse play reverse'
-        }
+        scrollTrigger: { trigger: ctaSection, start: 'top 85%', toggleActions: 'play reverse play reverse' }
       });
-
-      ctaTl.fromTo('.cta-anim-eyebrow',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' }
-      ).fromTo('.cta-white-text',
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' },
-        '-=0.3'
-      ).fromTo('.cta-gold-text',
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' },
-        '-=0.65'
-      ).fromTo('.cta-anim-subtext',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' },
-        '-=0.4'
-      ).fromTo('.cta-anim-btn',
-        { opacity: 0, scale: 0.96 },
-        { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.2)' },
-        '-=0.3'
-      );
+      ctaTl
+        .fromTo('.cta-anim-eyebrow', { ...IR, opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' })
+        .fromTo('.cta-white-text',   { ...IR, opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, '-=0.3')
+        .fromTo('.cta-gold-text',    { ...IR, opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' }, '-=0.65')
+        .fromTo('.cta-anim-subtext', { ...IR, opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, '-=0.4')
+        .fromTo('.cta-anim-btn',     { ...IR, opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.2)' }, '-=0.3');
     }
 
     // J. FOOTER REVEAL
     const footer = document.querySelector('.main-footer');
     if (footer) {
       gsap.fromTo(['.footer-brand-statement', '.footer-nav-group'],
-        { opacity: 0, y: 20 },
+        { ...IR, opacity: 0, y: 20 },
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.08,
-          ease: 'power4.out',
-          scrollTrigger: {
-            trigger: footer,
-            start: 'top 90%',
-            toggleActions: 'play reverse play reverse'
-          }
+          opacity: 1, y: 0, duration: 0.7, stagger: 0.08, ease: 'power4.out',
+          scrollTrigger: { trigger: footer, start: 'top 90%', toggleActions: 'play reverse play reverse' }
         }
       );
     }
   }
-
   // -------------------------------------------------------------
   // 4. FAQ Accordion Click Handler
   // -------------------------------------------------------------

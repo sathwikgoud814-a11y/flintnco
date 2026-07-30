@@ -1772,9 +1772,29 @@ body::before {
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--bg);
-  border-top: 1px solid var(--border-color-light);
-  padding-top: 3rem;
+  padding-top: 1rem;
   position: relative;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.pillar-block:hover {
+  transform: translateY(-4px);
+}
+
+/* Editorial Divider Line */
+.pillar-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--border-color-light);
+  margin-bottom: 2rem;
+  transform-origin: left center;
+  transition: background-color 0.4s ease;
+  will-change: transform, background-color;
+}
+
+.pillar-block:hover .pillar-divider {
+  background-color: rgba(212, 175, 55, 0.6);
 }
 
 .pillar-header {
@@ -1793,6 +1813,8 @@ body::before {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--accent);
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
 .pillar-svg {
@@ -1800,12 +1822,13 @@ body::before {
   max-width: 100px;
   color: var(--text-secondary);
   opacity: 0.55;
-  transition: color 0.4s ease, opacity 0.4s ease;
+  transition: color 0.4s ease, opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pillar-block:hover .pillar-svg {
   color: var(--accent);
   opacity: 0.9;
+  transform: scale(1.05);
 }
 
 .pillar-title {
@@ -1813,13 +1836,30 @@ body::before {
   font-size: clamp(2rem, 2.8vw, 2.8rem);
   font-weight: 400;
   color: var(--text-primary);
-  margin-bottom: 1.8rem;
+  margin-bottom: 0.5rem;
   line-height: 1.1;
+  will-change: transform, opacity;
 }
 
 .pillar-title em {
   font-style: italic;
   color: var(--accent);
+}
+
+/* Gold Underline Reveal */
+.gold-underline {
+  display: block;
+  width: 42px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 1.5rem;
+  transform-origin: left center;
+  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, width;
+}
+
+.pillar-block:hover .gold-underline {
+  width: 68px;
 }
 
 .pillar-desc {
@@ -1829,13 +1869,8 @@ body::before {
   line-height: 1.8;
   color: var(--text-secondary);
   max-width: 580px;
+  will-change: transform, opacity;
 }
-
-/* Staggered transition delays for Philosophy blocks (Desktop) */
-.row-odd .pillar-block:nth-child(1) { transition-delay: 0.05s; }
-.row-odd .pillar-block:nth-child(2) { transition-delay: 0.22s; }
-.row-even .pillar-block:nth-child(1) { transition-delay: 0.1s; }
-.row-even .pillar-block:nth-child(2) { transition-delay: 0.28s; }
 
 /* -------------------------------------------------------------
    Luxury Testimonials Section (Social Proof)
