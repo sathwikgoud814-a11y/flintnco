@@ -183,22 +183,22 @@
         refreshPriority:     1,
         scrub:               0.4,
         animation:           tl,
-        onUpdate: function (self) {
-          var progress = Math.max(0, Math.min(0.999, self.progress));
-          var chap = Math.floor(progress * CHAPTERS);
-          
-          dots.forEach(function (d, idx) {
-            d.classList.toggle('active', idx === chap);
-          });
-
-          slides.forEach(function (s, idx) {
-            if (idx === chap) {
-              s.classList.add('active-idle');
-            } else {
-              s.classList.remove('active-idle');
+        onUpdate: (function () {
+          var activeChap = -1;
+          return function (self) {
+            var progress = Math.max(0, Math.min(0.999, self.progress));
+            var chap = Math.floor(progress * CHAPTERS);
+            if (chap !== activeChap) {
+              activeChap = chap;
+              dots.forEach(function (d, idx) {
+                d.classList.toggle('active', idx === chap);
+              });
+              slides.forEach(function (s, idx) {
+                s.classList.toggle('active-idle', idx === chap);
+              });
             }
-          });
-        }
+          };
+        })()
       });
     }
 

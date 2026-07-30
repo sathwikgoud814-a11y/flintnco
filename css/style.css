@@ -4450,3 +4450,68 @@ html.light-theme .ba-dot {
   fill:   var(--accent) !important;
   stroke: none !important;
 }
+
+/* -------------------------------------------------------------
+   Performance & 60 FPS GPU Hardware Acceleration System
+   ------------------------------------------------------------- */
+
+/* 1. GPU Layers for Smooth Hardware-Accelerated Compositing */
+.hero-visual,
+.browser-mockup,
+.case-browser-mockup,
+.chapter-slide,
+.chapter-text-slide,
+.service-card,
+.pillar-block,
+.testimonial-card,
+.faq-item,
+.closing-section {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* 2. SVG Non-Scaling Vector Stroke Hardware Optimization */
+svg path,
+svg circle,
+svg rect,
+svg polyline,
+svg line {
+  vector-effect: non-scaling-stroke;
+}
+
+/* 3. Section Isolation to Prevent Global Document Reflows */
+.services-section,
+.valprop-section,
+.testimonials-section,
+.faq-section {
+  contain: content;
+}
+
+/* 4. Complete prefers-reduced-motion Overrides */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .closing-grain-overlay {
+    animation: none !important;
+  }
+
+  .footer-brand-logo {
+    animation: none !important;
+    background: none !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: initial !important;
+  }
+
+  .cta-particle-canvas,
+  .footer-embers-canvas {
+    display: none !important;
+  }
+}

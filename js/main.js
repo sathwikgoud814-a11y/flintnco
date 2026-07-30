@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
   
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', handleScroll, { passive: true });
   handleScroll();
 
   if (ctaSection && header && 'IntersectionObserver' in window) {
@@ -81,35 +81,32 @@ document.addEventListener('DOMContentLoaded', () => {
     navObserver.observe(ctaSection);
   }
 
-  // Active Section Indicator Tracking
+  // Active Section Indicator Tracking (IntersectionObserver - Zero Layout Thrashing)
   const sectionsForNav = document.querySelectorAll('section[id], footer[id]');
   const desktopNavLinks = document.querySelectorAll('.nav-link');
 
-  if (sectionsForNav.length > 0 && desktopNavLinks.length > 0) {
-    const updateActiveNavLink = () => {
-      let currentId = '';
-      const scrollPos = window.scrollY + 180;
+  if (sectionsForNav.length > 0 && desktopNavLinks.length > 0 && 'IntersectionObserver' in window) {
+    const navLinkMap = {};
+    desktopNavLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        navLinkMap[href.substring(1)] = link;
+      }
+    });
 
-      sectionsForNav.forEach(sec => {
-        const top = sec.offsetTop;
-        const height = sec.offsetHeight;
-        if (scrollPos >= top && scrollPos < top + height) {
-          currentId = sec.getAttribute('id');
+    const activeSectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          desktopNavLinks.forEach(l => l.classList.remove('active'));
+          if (navLinkMap[id]) {
+            navLinkMap[id].classList.add('active');
+          }
         }
       });
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
 
-      desktopNavLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (currentId && href === `#${currentId}`) {
-          link.classList.add('active');
-        } else {
-          link.classList.remove('active');
-        }
-      });
-    };
-
-    window.addEventListener('scroll', updateActiveNavLink);
-    updateActiveNavLink();
+    sectionsForNav.forEach(sec => activeSectionObserver.observe(sec));
   }
 
 
@@ -161,12 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
       mouseX = x * 8;
       mouseY = y * 8;
-    });
+    }, { passive: true });
 
     hero.addEventListener('mouseleave', () => {
       mouseX = 0;
       mouseY = 0;
-    });
+    }, { passive: true });
 
     const animateParallax = () => {
       currentX += (mouseX - currentX) * 0.045;
