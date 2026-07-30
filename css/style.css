@@ -4471,16 +4471,7 @@ html.light-theme .ba-dot {
   backface-visibility: hidden;
 }
 
-/* 2. SVG Non-Scaling Vector Stroke Hardware Optimization */
-svg path,
-svg circle,
-svg rect,
-svg polyline,
-svg line {
-  vector-effect: non-scaling-stroke;
-}
-
-/* 3. Section Isolation to Prevent Global Document Reflows */
+/* 2. Section Isolation to Prevent Global Document Reflows */
 .services-section,
 .valprop-section,
 .testimonials-section,
