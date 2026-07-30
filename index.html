@@ -10086,6 +10086,9 @@
 
     <!-- Physical Forged Dark CTA Surface & Particle Canvas -->
     <section class="closing-section" id="inquire">
+      <!-- Subtle Moving Film Grain Overlay -->
+      <div class="closing-grain-overlay"></div>
+
       <!-- "Forged Flint" Natural Fracture Transition -->
       <div class="flint-fracture-wrapper" id="flint-fracture">
         <svg class="flint-fracture-svg" viewBox="0 0 1000 40" preserveAspectRatio="none">
@@ -10120,7 +10123,10 @@
             Every project receives senior attention, strategic thinking, and meticulous execution.
           </p>
           <div class="closing-cta-btn-wrap cta-anim-btn">
-            <a href="mailto:hello@flintco.studio?subject=Project Inquiry" class="btn-primary">Start Your Project</a>
+            <a href="mailto:hello@flintco.studio?subject=Project Inquiry" class="btn-primary cta-btn-primary">
+              <span class="btn-text">Start Your Project</span>
+              <span class="btn-hover-spark"></span>
+            </a>
             <p class="closing-friction">Discovery call &nbsp;&middot;&nbsp; 30 minutes &nbsp;&middot;&nbsp; No obligation</p>
           </div>
         </div>
@@ -10136,10 +10142,9 @@
       </div>
     </section>
 
-
-
-    <!-- Standalone Premium Footer -->
+    <!-- Standalone Premium Footer (Extension of the Forge) -->
     <footer class="main-footer">
+      <canvas id="footer-embers-canvas" class="footer-embers-canvas"></canvas>
       <div class="footer-container">
         
         <!-- Left Column: Branding and Statement -->
@@ -10148,7 +10153,7 @@
           <p class="footer-brand-statement">
             We build websites that help local businesses get more customers. No jargon. No templates. Just a site that works.
           </p>
-        <span class="footer-copyright-desktop">&copy; 2026 Flint Co. All rights reserved.</span>
+          <span class="footer-copyright-desktop">&copy; 2026 Flint Co. All rights reserved.</span>
         </div>
         
         <!-- Right Column: Navigation Grids -->

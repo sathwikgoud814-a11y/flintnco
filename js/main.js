@@ -465,9 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
           '-=0.5'
         );
       }
-    }
-
-    // I. CTA SECTION REVEAL
+    }    // I. CTA SECTION REVEAL & EMBER SEQUENCE
     if (ctaSection) {
       const fractureTl = gsap.timeline({
         scrollTrigger: { trigger: ctaSection, start: 'top 88%', end: 'top 40%', scrub: 0.6 }
@@ -475,19 +473,24 @@ document.addEventListener('DOMContentLoaded', () => {
       fractureTl
         .fromTo('.flint-crack-base',      { ...IR, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' })
         .fromTo('.flint-crack-highlight', { ...IR, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3')
-        .fromTo('.flint-spark',           { ...IR, opacity: 0, x: -10 },     { opacity: 0.9, x: 20, duration: 0.25, stagger: 0.05, ease: 'power2.out' }, '-=0.2')
-        .to('.flint-spark',               { opacity: 0, duration: 0.2 }, '-=0.05')
         .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
       const ctaTl = gsap.timeline({
-        scrollTrigger: { trigger: ctaSection, start: 'top 85%', toggleActions: 'play reverse play reverse' }
+        scrollTrigger: { trigger: ctaSection, start: 'top 82%', toggleActions: 'play reverse play reverse' }
       });
       ctaTl
-        .fromTo('.cta-anim-eyebrow', { ...IR, opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' })
-        .fromTo('.cta-white-text',   { ...IR, opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, '-=0.3')
-        .fromTo('.cta-gold-text',    { ...IR, opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' }, '-=0.65')
-        .fromTo('.cta-anim-subtext', { ...IR, opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, '-=0.4')
-        .fromTo('.cta-anim-btn',     { ...IR, opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.2)' }, '-=0.3');
+        // 1. READY TO START (eyebrow)
+        .fromTo('.cta-anim-eyebrow', { ...IR, opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' })
+        // 2. Headline
+        .fromTo('.cta-white-text',   { ...IR, opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.75, ease: 'expo.out' }, '-=0.35')
+        .fromTo('.cta-gold-text',    { ...IR, opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' }, '-=0.5')
+        // 3. Supporting copy
+        .fromTo('.cta-anim-subtext', { ...IR, opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, '-=0.35')
+        // 4. Button
+        .fromTo('.cta-anim-btn',     { ...IR, opacity: 0, scale: 0.96, y: 18 }, { opacity: 1, scale: 1, y: 0, duration: 0.65, ease: 'back.out(1.2)' }, '-=0.3')
+        // 5. Embers
+        .fromTo('.flint-spark',      { ...IR, opacity: 0, scale: 0.5, y: 10 }, { opacity: 0.9, scale: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' }, '-=0.25')
+        .fromTo('#cta-particle-canvas', { ...IR, opacity: 0 }, { opacity: 0.8, duration: 0.8, ease: 'power2.out' }, '-=0.4');
     }
 
     // J. FOOTER REVEAL
@@ -599,5 +602,60 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     drawParticles();
+  }
+
+  // -------------------------------------------------------------
+  // 7. Tiny Drifting Embers inside Footer Canvas (Extension of Forge)
+  // -------------------------------------------------------------
+  const footerCanvas = document.getElementById('footer-embers-canvas');
+  if (footerCanvas && !prefersReducedMotion) {
+    const fCtx = footerCanvas.getContext('2d');
+    let fWidth = (footerCanvas.width = footerCanvas.offsetWidth || window.innerWidth);
+    let fHeight = (footerCanvas.height = footerCanvas.offsetHeight || 300);
+
+    const fResize = () => {
+      fWidth = footerCanvas.width = footerCanvas.offsetWidth || window.innerWidth;
+      fHeight = footerCanvas.height = footerCanvas.offsetHeight || 300;
+    };
+    window.addEventListener('resize', fResize);
+
+    const NUM_FOOTER_EMBERS = 12;
+    const footerEmbers = [];
+
+    for (let i = 0; i < NUM_FOOTER_EMBERS; i++) {
+      footerEmbers.push({
+        x: Math.random() * fWidth,
+        y: Math.random() * fHeight,
+        radius: Math.random() * 1.2 + 0.5,
+        alpha: Math.random() * 0.25 + 0.05,
+        speedY: Math.random() * 0.25 + 0.08,
+        sineOffset: Math.random() * Math.PI * 2,
+        sineSpeed: Math.random() * 0.01 + 0.003
+      });
+    }
+
+    const drawFooterEmbers = () => {
+      fCtx.clearRect(0, 0, fWidth, fHeight);
+
+      footerEmbers.forEach(p => {
+        p.y -= p.speedY;
+        p.sineOffset += p.sineSpeed;
+        p.x += Math.sin(p.sineOffset) * 0.2;
+
+        if (p.y < -10) {
+          p.y = fHeight + 10;
+          p.x = Math.random() * fWidth;
+        }
+
+        fCtx.beginPath();
+        fCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        fCtx.fillStyle = `rgba(212, 175, 55, ${p.alpha})`;
+        fCtx.fill();
+      });
+
+      requestAnimationFrame(drawFooterEmbers);
+    };
+
+    drawFooterEmbers();
   }
 });
