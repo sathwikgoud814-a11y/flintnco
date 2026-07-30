@@ -68,18 +68,23 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', handleScroll, { passive: true });
   handleScroll();
 
-  if (ctaSection && header && 'IntersectionObserver' in window) {
+  const darkSections = document.querySelectorAll('#inquire, #work');
+  if (darkSections.length > 0 && header && 'IntersectionObserver' in window) {
     const navObserver = new IntersectionObserver((entries) => {
+      let isOverDark = false;
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          header.classList.add('navbar-dark');
-        } else {
-          header.classList.remove('navbar-dark');
+          isOverDark = true;
         }
       });
-    }, { threshold: 0.45 });
+      if (isOverDark) {
+        header.classList.add('navbar-dark');
+      } else {
+        header.classList.remove('navbar-dark');
+      }
+    }, { threshold: 0.2 });
 
-    navObserver.observe(ctaSection);
+    darkSections.forEach(sec => navObserver.observe(sec));
   }
 
   // Active Section Indicator Tracking (IntersectionObserver - Zero Layout Thrashing)
@@ -471,26 +476,18 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: { trigger: ctaSection, start: 'top 92%', end: 'top 40%', scrub: 0.6 }
       });
       fractureTl
-        .fromTo('.flint-crack-base',      { ...IR, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' })
-        .fromTo('.flint-crack-highlight', { ...IR, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3')
+        .fromTo('.flint-crack-base',      { immediateRender: false, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' })
+        .fromTo('.flint-crack-highlight', { immediateRender: false, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3')
         .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
-      const ctaTl = gsap.timeline({
-        scrollTrigger: { trigger: ctaSection, start: 'top 90%', toggleActions: 'play none none none' }
-      });
-      ctaTl
-        // 1. READY TO START (eyebrow)
-        .fromTo('.cta-anim-eyebrow', { ...IR, opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' })
-        // 2. Headline
-        .fromTo('.cta-white-text',   { ...IR, opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.75, ease: 'expo.out' }, '-=0.35')
-        .fromTo('.cta-gold-text',    { ...IR, opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' }, '-=0.5')
-        // 3. Supporting copy
-        .fromTo('.cta-anim-subtext', { ...IR, opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, '-=0.35')
-        // 4. Button
-        .fromTo('.cta-anim-btn',     { ...IR, opacity: 0, scale: 0.96, y: 18 }, { opacity: 1, scale: 1, y: 0, duration: 0.65, ease: 'back.out(1.2)' }, '-=0.3')
-        // 5. Embers
-        .fromTo('.flint-spark',      { ...IR, opacity: 0, scale: 0.5, y: 10 }, { opacity: 0.9, scale: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' }, '-=0.25')
-        .fromTo('#cta-particle-canvas', { ...IR, opacity: 0 }, { opacity: 0.8, duration: 0.8, ease: 'power2.out' }, '-=0.4');
+      gsap.fromTo(
+        ['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.cta-anim-btn', '.flint-spark', '#cta-particle-canvas'],
+        { opacity: 0, y: 15 },
+        {
+          opacity: 1, y: 0, duration: 0.85, stagger: 0.08, ease: 'power4.out',
+          scrollTrigger: { trigger: ctaSection, start: 'top 88%', once: true }
+        }
+      );
     }
 
     // J. FOOTER REVEAL
