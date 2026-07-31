@@ -506,6 +506,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.classList.add('active');
 
         caseMockup.className = 'case-browser-mockup stage-' + stage;
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.refresh();
+        }
       });
     });
   }
@@ -523,7 +526,13 @@ document.addEventListener('DOMContentLoaded', () => {
       width = particleCanvas.width = particleCanvas.offsetWidth || window.innerWidth;
       height = particleCanvas.height = particleCanvas.offsetHeight || 600;
     };
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('orientationchange', resize, { passive: true });
+
+    if ('ResizeObserver' in window && particleCanvas.parentElement) {
+      const ro = new ResizeObserver(resize);
+      ro.observe(particleCanvas.parentElement);
+    }
 
     const NUM_PARTICLES = 16;
     const particles = [];
@@ -578,7 +587,13 @@ document.addEventListener('DOMContentLoaded', () => {
       fWidth = footerCanvas.width = footerCanvas.offsetWidth || window.innerWidth;
       fHeight = footerCanvas.height = footerCanvas.offsetHeight || 300;
     };
-    window.addEventListener('resize', fResize);
+    window.addEventListener('resize', fResize, { passive: true });
+    window.addEventListener('orientationchange', fResize, { passive: true });
+
+    if ('ResizeObserver' in window && footerCanvas.parentElement) {
+      const fRo = new ResizeObserver(fResize);
+      fRo.observe(footerCanvas.parentElement);
+    }
 
     const NUM_FOOTER_EMBERS = 12;
     const footerEmbers = [];
@@ -619,4 +634,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     drawFooterEmbers();
   }
+
+  // -------------------------------------------------------------
+  // 8. Global Viewport Resize & Orientation Change Observer
+  // -------------------------------------------------------------
+  let resizeTimer;
+  const onViewportChange = () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
+    }, 150);
+  };
+  window.addEventListener('resize', onViewportChange, { passive: true });
+  window.addEventListener('orientationchange', onViewportChange, { passive: true });
 });
