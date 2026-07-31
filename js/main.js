@@ -205,100 +205,91 @@ document.addEventListener('DOMContentLoaded', () => {
     // Without it, GSAP applies opacity:0 to ALL elements immediately at
     // DOMContentLoaded — before any ScrollTrigger fires. Elements remain
     // invisible and create blank whitespace voids throughout the page.
-    const IR = { immediateRender: false };
+    // -------------------------------------------------------------
+    // Unified Reusable Reveal Animation System
+    // -------------------------------------------------------------
+    function createReveal(target, config = {}) {
+      const rawElements = typeof target === 'string' ? gsap.utils.toArray(target) : (Array.isArray(target) ? target : [target]);
+      if (!rawElements || rawElements.length === 0) return null;
+      const validElements = rawElements.filter(Boolean);
+      if (validElements.length === 0) return null;
+
+      const trigger = config.trigger || validElements[0];
+      if (!trigger) return null;
+
+      // Prevent duplicate initialization on same trigger
+      if (trigger._revealInitialized) return null;
+      trigger._revealInitialized = true;
+
+      const start = config.start || 'top 85%';
+      const duration = config.duration || 0.85;
+      const ease = config.ease || 'power4.out';
+      const y = config.y !== undefined ? config.y : 30;
+      const scale = config.scale;
+      const stagger = config.stagger || 0;
+
+      const fromVars = { immediateRender: false, opacity: 0, y };
+      if (scale !== undefined) fromVars.scale = scale;
+
+      const toVars = {
+        opacity: 1,
+        y: 0,
+        duration,
+        ease,
+        scrollTrigger: {
+          trigger,
+          start,
+          once: true
+        },
+        onComplete: () => {
+          gsap.set(validElements, { opacity: 1, clearProps: 'opacity,transform' });
+          if (config.onComplete) config.onComplete();
+        }
+      };
+
+      if (scale !== undefined) toVars.scale = 1;
+      if (stagger > 0) toVars.stagger = stagger;
+
+      return gsap.fromTo(validElements, fromVars, toVars);
+    }
 
     // A. HERO SECTION REVEAL
-    const heroEls = ['.hero-headline', '.hero-headline em', '.hero-paragraph', '.btn-primary', '.btn-secondary', '#parallax-browser', '.hero-scroll-indicator'];
-    const heroTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#hero',
-        start: 'top 85%',
-        once: true
-      },
-      onComplete: () => {
-        gsap.set(heroEls, { opacity: 1, clearProps: 'opacity,transform' });
-      }
+    createReveal(['.hero-headline', '.hero-headline em', '.hero-paragraph', '.btn-primary', '.btn-secondary', '#parallax-browser', '.hero-scroll-indicator'], {
+      trigger: '#hero',
+      start: 'top 85%',
+      duration: 0.9,
+      stagger: 0.08,
+      y: 35,
+      ease: 'power4.out'
     });
 
-    heroTl.fromTo('.hero-headline',
-      { ...IR, opacity: 0, y: 35 },
-      { opacity: 1, y: 0, duration: 1.0, ease: 'power4.out' }
-    ).fromTo('.hero-headline em',
-      { ...IR, opacity: 0, y: 15 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' },
-      '-=0.7'
-    ).fromTo('.hero-paragraph',
-      { ...IR, opacity: 0, y: 25 },
-      { opacity: 1, y: 0, duration: 0.85, ease: 'power4.out' },
-      '-=0.6'
-    ).fromTo('.btn-primary',
-      { ...IR, opacity: 0, scale: 0.96, y: 20 },
-      { opacity: 1, scale: 1, y: 0, duration: 0.75, ease: 'power4.out' },
-      '-=0.5'
-    ).fromTo('.btn-secondary',
-      { ...IR, opacity: 0, scale: 0.96, y: 20 },
-      { opacity: 1, scale: 1, y: 0, duration: 0.75, ease: 'power4.out' },
-      '-=0.62'
-    ).fromTo('#parallax-browser',
-      { ...IR, opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out' },
-      '-=0.7'
-    ).fromTo('.hero-scroll-indicator',
-      { ...IR, opacity: 0, y: 15 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' },
-      '-=0.4'
-    );
-
     // B. TRUST TICKER SECTION REVEAL
-    const trustElements = gsap.utils.toArray('.trust-item, .trust-label');
-    if (trustElements.length > 0) {
-      gsap.fromTo(trustElements,
-        { ...IR, opacity: 0, y: 25 },
-        {
-          opacity: 1, y: 0, duration: 0.7, stagger: 0.06, ease: 'power4.out',
-          scrollTrigger: {
-            trigger: '.trust-section',
-            start: 'top 85%',
-            once: true
-          },
-          onComplete: () => {
-            gsap.set(trustElements, { opacity: 1, clearProps: 'opacity,transform' });
-          }
-        }
-      );
-    }
+    createReveal('.trust-item, .trust-label', {
+      trigger: '.trust-section',
+      start: 'top 85%',
+      duration: 0.7,
+      stagger: 0.06,
+      y: 25,
+      ease: 'power4.out'
+    });
 
     // C. PROCESS / TIMELINE SECTION REVEAL
-    const timelineLeft = document.querySelector('.timeline-left');
-    const trackLine = document.querySelector('.timeline-track-line');
+    createReveal('.timeline-left', {
+      trigger: '#process',
+      start: 'top 80%',
+      duration: 0.9,
+      y: 35,
+      ease: 'power4.out'
+    });
+
+    createReveal('.timeline-track-line', {
+      trigger: '.timeline-right',
+      start: 'top 80%',
+      duration: 1.2,
+      ease: 'power2.inOut'
+    });
+
     const timelineSteps = gsap.utils.toArray('.timeline-step');
-
-    if (timelineLeft) {
-      gsap.fromTo(timelineLeft,
-        { ...IR, opacity: 0, y: 35 },
-        {
-          opacity: 1, y: 0, duration: 0.9, ease: 'power4.out',
-          scrollTrigger: { trigger: '#process', start: 'top 80%', once: true },
-          onComplete: () => {
-            gsap.set(timelineLeft, { opacity: 1, clearProps: 'opacity,transform' });
-          }
-        }
-      );
-    }
-
-    if (trackLine) {
-      gsap.fromTo(trackLine,
-        { ...IR, scaleY: 0, transformOrigin: 'top center' },
-        {
-          scaleY: 1, duration: 1.2, ease: 'power2.inOut',
-          scrollTrigger: { trigger: '.timeline-right', start: 'top 80%', once: true },
-          onComplete: () => {
-            gsap.set(trackLine, { clearProps: 'transform' });
-          }
-        }
-      );
-    }
-
     if (timelineSteps.length > 0) {
       const setActiveStep = (activeStep) => {
         timelineSteps.forEach((step) => {
@@ -313,14 +304,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       };
 
-      // Set first step active initially
       setActiveStep(timelineSteps[0]);
 
       timelineSteps.forEach((step) => {
-        const stepNum   = step.querySelector('.step-meta');
-        const stepTitle = step.querySelector('.step-title');
-        const stepDesc  = step.querySelector('.step-desc');
-
         ScrollTrigger.create({
           trigger: step,
           start: 'top 60%',
@@ -329,233 +315,112 @@ document.addEventListener('DOMContentLoaded', () => {
           onEnterBack: () => setActiveStep(step)
         });
 
-        const stepEls = [stepNum, stepTitle, stepDesc].filter(Boolean);
-        const stepTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: step,
-            start: 'top 85%',
-            once: true
-          },
-          onComplete: () => {
-            if (stepEls.length > 0) gsap.set(stepEls, { opacity: 1, clearProps: 'opacity,transform' });
-          }
+        const stepEls = [step.querySelector('.step-meta'), step.querySelector('.step-title'), step.querySelector('.step-desc')].filter(Boolean);
+        createReveal(stepEls, {
+          trigger: step,
+          start: 'top 85%',
+          duration: 0.7,
+          stagger: 0.1,
+          y: 20,
+          ease: 'power4.out'
         });
-
-        if (stepNum)   stepTl.fromTo(stepNum,   { ...IR, opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' });
-        if (stepTitle) stepTl.fromTo(stepTitle, { ...IR, opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.75, ease: 'power4.out' }, '-=0.35');
-        if (stepDesc)  stepTl.fromTo(stepDesc,  { ...IR, opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, '-=0.45');
       });
     }
 
     // D. CASE STUDY SECTION REVEAL
-    const caseSection = document.getElementById('work');
-    if (caseSection) {
-      const caseEls = ['.case-header', '.case-story-nav', '.case-visual-wrapper'];
-      const caseTl = gsap.timeline({
-        scrollTrigger: { trigger: caseSection, start: 'top 80%', once: true },
-        onComplete: () => {
-          gsap.set(caseEls, { opacity: 1, clearProps: 'opacity,transform' });
-        }
-      });
-      caseTl.fromTo(caseEls,
-        { ...IR, opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'expo.out' }
-      );
+    createReveal(['.case-header', '.case-story-nav', '.case-visual-wrapper'], {
+      trigger: '#work',
+      start: 'top 80%',
+      duration: 0.9,
+      stagger: 0.1,
+      y: 35,
+      ease: 'expo.out'
+    });
 
-      const narrativeCols = gsap.utils.toArray('.narrative-col');
-      if (narrativeCols.length > 0) {
-        gsap.fromTo(narrativeCols,
-          { ...IR, opacity: 0, y: 30 },
-          {
-            opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'power4.out',
-            scrollTrigger: { trigger: '.case-narrative-grid', start: 'top 85%', once: true },
-            onComplete: () => {
-              gsap.set(narrativeCols, { opacity: 1, clearProps: 'opacity,transform' });
-            }
-          }
-        );
-      }
-    }
+    createReveal('.narrative-col', {
+      trigger: '.case-narrative-grid',
+      start: 'top 85%',
+      duration: 0.8,
+      stagger: 0.08,
+      y: 30,
+      ease: 'power4.out'
+    });
 
-    // E. SERVICES SECTION — Per-card layered reveal
+    // E. SERVICES SECTION REVEAL
+    createReveal('.services-header', {
+      trigger: '.services-section',
+      start: 'top 80%',
+      duration: 0.85,
+      y: 30,
+      ease: 'power4.out'
+    });
+
     const serviceCards = gsap.utils.toArray('.service-card');
     if (serviceCards.length > 0) {
-      gsap.fromTo('.services-header',
-        { ...IR, opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.85, ease: 'power4.out',
-          scrollTrigger: { trigger: '.services-section', start: 'top 80%', once: true },
-          onComplete: () => {
-            gsap.set('.services-header', { opacity: 1, clearProps: 'opacity,transform' });
-          }
-        }
-      );
-
       serviceCards.forEach((card) => {
-        const idx   = card.querySelector('.service-index');
-        const title = card.querySelector('.service-title');
-        const desc  = card.querySelector('.service-desc');
-        const tags  = gsap.utils.toArray('.outcome-tag', card);
-        const link  = card.querySelector('.service-link');
-
-        const cardEls = [card, idx, title, desc, ...tags, link].filter(Boolean);
-        const cardTl = gsap.timeline({
-          scrollTrigger: { trigger: card, start: 'top 88%', once: true },
-          onComplete: () => {
-            if (cardEls.length > 0) gsap.set(cardEls, { opacity: 1, clearProps: 'opacity,transform' });
-          }
+        const cardEls = [card, card.querySelector('.service-index'), card.querySelector('.service-title'), card.querySelector('.service-desc'), ...gsap.utils.toArray('.outcome-tag', card), card.querySelector('.service-link')].filter(Boolean);
+        createReveal(cardEls, {
+          trigger: card,
+          start: 'top 88%',
+          duration: 0.85,
+          stagger: 0.06,
+          y: 30,
+          ease: 'expo.out'
         });
-
-        cardTl.fromTo(card,  { ...IR, opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' });
-        if (idx)   cardTl.fromTo(idx,   { ...IR, opacity: 0 },         { opacity: 1, duration: 0.45, ease: 'power2.out' }, '-=0.6');
-        if (title) cardTl.fromTo(title, { ...IR, opacity: 0, y: 22 },  { opacity: 1, y: 0, duration: 0.65, ease: 'power4.out' }, '-=0.35');
-        if (desc)  cardTl.fromTo(desc,  { ...IR, opacity: 0, y: 14 },  { opacity: 1, y: 0, duration: 0.55, ease: 'power4.out' }, '-=0.4');
-        if (tags.length > 0) cardTl.fromTo(tags, { ...IR, opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.07, ease: 'power3.out' }, '-=0.3');
-        if (link)  cardTl.fromTo(link,  { ...IR, opacity: 0, y: 8 },   { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.25');
       });
     }
 
-    // F. PHILOSOPHY / VALUE PROP SECTION — Per-pillar card reveal
+    // F. PHILOSOPHY / VALUE PROP SECTION REVEAL
+    createReveal('.valprop-header', {
+      trigger: '#philosophy',
+      start: 'top 80%',
+      duration: 0.85,
+      y: 30,
+      ease: 'power4.out'
+    });
+
     const pillarBlocks = gsap.utils.toArray('.pillar-block');
     if (pillarBlocks.length > 0) {
-      gsap.fromTo('.valprop-header',
-        { ...IR, opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.85, ease: 'power4.out',
-          scrollTrigger: { trigger: '#philosophy', start: 'top 80%', once: true },
-          onComplete: () => {
-            gsap.set('.valprop-header', { opacity: 1, clearProps: 'opacity,transform' });
-          }
-        }
-      );
-
       pillarBlocks.forEach((pillar) => {
-        const divider   = pillar.querySelector('.pillar-divider');
-        const num       = pillar.querySelector('.pillar-num');
-        const svg       = pillar.querySelector('.pillar-svg');
-        const title     = pillar.querySelector('.pillar-title');
-        const underline = pillar.querySelector('.gold-underline');
-        const desc      = pillar.querySelector('.pillar-desc');
-
-        const pillarEls = [pillar, divider, num, svg, title, underline, desc].filter(Boolean);
-        const pillarTl = gsap.timeline({
-          scrollTrigger: { trigger: pillar, start: 'top 85%', once: true },
-          onComplete: () => {
-            if (pillarEls.length > 0) gsap.set(pillarEls, { opacity: 1, clearProps: 'opacity,transform' });
-          }
+        const pillarEls = [pillar, pillar.querySelector('.pillar-divider'), pillar.querySelector('.pillar-num'), pillar.querySelector('.pillar-svg'), pillar.querySelector('.pillar-title'), pillar.querySelector('.gold-underline'), pillar.querySelector('.pillar-desc')].filter(Boolean);
+        createReveal(pillarEls, {
+          trigger: pillar,
+          start: 'top 85%',
+          duration: 0.75,
+          stagger: 0.06,
+          y: 20,
+          ease: 'power4.out'
         });
-
-        // 1. Editorial divider grows horizontally
-        if (divider) {
-          pillarTl.fromTo(divider,
-            { ...IR, scaleX: 0, transformOrigin: 'left center' },
-            { scaleX: 1, duration: 0.8, ease: 'power3.out' }
-          );
-        }
-
-        // 2. Pillar number slides up & fades
-        if (num) {
-          pillarTl.fromTo(num,
-            { ...IR, opacity: 0, y: 14 },
-            { opacity: 1, y: 0, duration: 0.55, ease: 'power4.out' },
-            divider ? '-=0.55' : '+=0'
-          );
-        }
-
-        // 3. Vector SVG icon scales gently
-        if (svg) {
-          pillarTl.fromTo(svg,
-            { ...IR, opacity: 0, scale: 0.85 },
-            { opacity: 0.55, scale: 1, duration: 0.5, ease: 'power2.out' },
-            '-=0.4'
-          );
-        }
-
-        // 4. Headline text reveals
-        if (title) {
-          pillarTl.fromTo(title,
-            { ...IR, opacity: 0, y: 22 },
-            { opacity: 1, y: 0, duration: 0.7, ease: 'power4.out' },
-            '-=0.35'
-          );
-        }
-
-        // 5. Gold underline reveals
-        if (underline) {
-          pillarTl.fromTo(underline,
-            { ...IR, scaleX: 0, transformOrigin: 'left center' },
-            { scaleX: 1, duration: 0.6, ease: 'expo.out' },
-            '-=0.45'
-          );
-        }
-
-        // 6. Description text fades in
-        if (desc) {
-          pillarTl.fromTo(desc,
-            { ...IR, opacity: 0, y: 16 },
-            { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' },
-            '-=0.35'
-          );
-        }
       });
     }
 
     // G. TESTIMONIALS & BEFORE/AFTER SHOWCASE REVEAL
-    const testimonialsSection = document.querySelector('.testimonials-section');
-    if (testimonialsSection) {
-      gsap.fromTo(['.testimonials-header', '.ba-showcase'],
-        { opacity: 0, y: 35 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.12,
-          ease: 'expo.out',
-          scrollTrigger: { trigger: testimonialsSection, start: 'top 80%', once: true },
-          onComplete: () => {
-            gsap.set(['.testimonials-header', '.ba-showcase'], {
-              opacity: 1,
-              clearProps: 'opacity,transform'
-            });
-          }
-        }
-      );
-    }
+    createReveal(['.testimonials-header', '.ba-showcase'], {
+      trigger: '.testimonials-section',
+      start: 'top 80%',
+      duration: 0.9,
+      stagger: 0.12,
+      y: 35,
+      ease: 'expo.out'
+    });
 
     // H. FAQ SECTION REVEAL
-    const faqSection = document.getElementById('faq');
-    const faqItemsArr = gsap.utils.toArray('.faq-item');
-    if (faqSection) {
-      gsap.fromTo('.faq-left',
-        { opacity: 0, y: 35 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power4.out',
-          scrollTrigger: { trigger: faqSection, start: 'top 80%', once: true },
-          onComplete: () => {
-            gsap.set('.faq-left', { opacity: 1, clearProps: 'opacity,transform' });
-          }
-        }
-      );
-      if (faqItemsArr.length > 0) {
-        gsap.fromTo(faqItemsArr,
-          { opacity: 0, y: 25 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.75,
-            stagger: 0.08,
-            ease: 'power4.out',
-            scrollTrigger: { trigger: faqSection, start: 'top 80%', once: true },
-            onComplete: () => {
-              gsap.set(faqItemsArr, { opacity: 1, clearProps: 'opacity,transform' });
-            }
-          }
-        );
-      }
-    }
+    createReveal('.faq-left', {
+      trigger: '#faq',
+      start: 'top 80%',
+      duration: 0.8,
+      y: 35,
+      ease: 'power4.out'
+    });
+
+    createReveal('.faq-item', {
+      trigger: '#faq',
+      start: 'top 80%',
+      duration: 0.75,
+      stagger: 0.08,
+      y: 25,
+      ease: 'power4.out'
+    });
 
     // I. CTA SECTION REVEAL & EMBER SEQUENCE
     if (ctaSection) {
@@ -567,56 +432,39 @@ document.addEventListener('DOMContentLoaded', () => {
         .fromTo('.flint-crack-highlight', { immediateRender: false, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3')
         .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
-      const ctaEls = ['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.closing-friction', '.flint-spark', '#cta-particle-canvas'];
-      gsap.fromTo(
-        ctaEls,
-        { opacity: 0, y: 15 },
-        {
-          opacity: 1, y: 0, duration: 0.85, stagger: 0.08, ease: 'power4.out',
-          scrollTrigger: { trigger: ctaSection, start: 'top 88%', once: true },
-          onComplete: () => {
-            gsap.set(ctaEls, { opacity: 1, clearProps: 'opacity,transform' });
-          }
-        }
-      );
+      createReveal(['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.closing-friction', '.flint-spark', '#cta-particle-canvas'], {
+        trigger: ctaSection,
+        start: 'top 88%',
+        duration: 0.85,
+        stagger: 0.08,
+        y: 15,
+        ease: 'power4.out'
+      });
 
       const ctaBtn = document.querySelector('.cta-btn-primary');
       if (ctaBtn) {
-        gsap.fromTo(ctaBtn,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-            scrollTrigger: { trigger: ctaSection, start: 'top 88%', once: true },
-            onComplete: () => {
-              gsap.set(ctaBtn, {
-                opacity: 1,
-                clearProps: 'transform',
-                pointerEvents: 'auto'
-              });
-            }
+        createReveal(ctaBtn, {
+          trigger: ctaSection,
+          start: 'top 88%',
+          duration: 0.6,
+          y: 20,
+          ease: 'power2.out',
+          onComplete: () => {
+            gsap.set(ctaBtn, { pointerEvents: 'auto' });
           }
-        );
+        });
       }
     }
 
     // J. FOOTER REVEAL
-    const footer = document.querySelector('.main-footer');
-    if (footer) {
-      const footerEls = ['.footer-brand-statement', '.footer-nav-group'];
-      gsap.fromTo(footerEls,
-        { ...IR, opacity: 0, y: 20 },
-        {
-          opacity: 1, y: 0, duration: 0.7, stagger: 0.08, ease: 'power4.out',
-          scrollTrigger: { trigger: footer, start: 'top 90%', once: true },
-          onComplete: () => {
-            gsap.set(footerEls, { opacity: 1, clearProps: 'opacity,transform' });
-          }
-        }
-      );
-    }
+    createReveal(['.footer-brand-statement', '.footer-nav-group'], {
+      trigger: '.main-footer',
+      start: 'top 90%',
+      duration: 0.7,
+      stagger: 0.08,
+      y: 20,
+      ease: 'power4.out'
+    });
   }
   // -------------------------------------------------------------
   // 4. FAQ Accordion Click Handler
