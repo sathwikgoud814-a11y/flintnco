@@ -432,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .fromTo('.flint-crack-highlight', { immediateRender: false, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3')
         .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
-      createReveal(['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.closing-friction', '.flint-spark', '#cta-particle-canvas'], {
+      createReveal(['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.cta-friction', '.flint-spark', '#cta-particle-canvas'], {
         trigger: ctaSection,
         start: 'top 88%',
         duration: 0.85,

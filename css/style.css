@@ -877,7 +877,7 @@ body::before {
   will-change: transform, opacity;
 }
 
-.chapter-eyebrow {
+.story-eyebrow {
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 500;
@@ -888,7 +888,7 @@ body::before {
   display: block;
 }
 
-.chapter-heading {
+.story-heading {
   font-family: var(--font-title);
   font-size: clamp(2.6rem, 4.2vw, 4.4rem);
   font-weight: 400;
@@ -897,12 +897,12 @@ body::before {
   margin-bottom: 1.8rem;
 }
 
-.chapter-heading em {
+.story-heading em {
   font-style: italic;
   color: var(--accent);
 }
 
-.chapter-body {
+.story-body {
   font-family: var(--font-body);
   font-size: clamp(1rem, 1.15vw, 1.12rem);
   font-weight: 300;
@@ -1947,9 +1947,9 @@ body::before {
 /* Staggered scroll reveal handled by GSAP — CSS delays removed */
 
 /* -------------------------------------------------------------
-   Premium Value Proposition Section (Philosophy)
+   Premium Philosophy Section
    ------------------------------------------------------------- */
-.valprop-section {
+.philosophy-section {
   padding: 4.5rem 0;
   background-color: var(--bg);
   border-bottom: 1px solid var(--border-color-light);
@@ -1957,21 +1957,21 @@ body::before {
   z-index: 10;
 }
 
-.valprop-container {
+.philosophy-container {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 4rem;
 }
 
-.valprop-header {
+.philosophy-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 2.5rem;
 }
 
-.valprop-tag {
+.philosophy-tag {
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 500;
@@ -1981,7 +1981,7 @@ body::before {
   margin-bottom: 1.5rem;
 }
 
-.valprop-heading {
+.philosophy-heading {
   font-family: var(--font-title);
   font-size: clamp(2.5rem, 3.8vw, 3.8rem);
   font-weight: 400;
@@ -1992,13 +1992,13 @@ body::before {
   text-align: left;
 }
 
-.valprop-grid {
+.philosophy-grid {
   display: flex;
   flex-direction: column;
   gap: 3rem;
 }
 
-.valprop-row {
+.philosophy-row {
   display: grid;
   gap: 3.5rem;
 }
@@ -2392,7 +2392,7 @@ body::before {
 /* -------------------------------------------------------------
    Full Viewport Physical Forged Dark CTA Surface & Canvas Particles
    ------------------------------------------------------------- */
-.closing-section {
+.cta-section {
   min-height: auto;
   padding: 5.5rem 2rem 4rem;
   background-color: #080808;
@@ -2405,7 +2405,7 @@ body::before {
 }
 
 /* Subtle Moving Film Grain Overlay */
-.closing-grain-overlay {
+.cta-grain-overlay {
   position: absolute;
   inset: -50%;
   width: 200%;
@@ -2496,7 +2496,7 @@ body::before {
 }
 
 /* Soft vertical gradient boundary at the top edge of the forged dark surface */
-.closing-section::before {
+.cta-section::before {
   content: '';
   position: absolute;
   top: 0;
@@ -2518,7 +2518,7 @@ body::before {
   opacity: 0.8;
 }
 
-.closing-container {
+.cta-container {
   position: relative;
   z-index: 3;
   width: 100%;
@@ -2529,7 +2529,7 @@ body::before {
   align-items: center;
 }
 
-.closing-content {
+.cta-content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2537,7 +2537,7 @@ body::before {
   margin-bottom: 2.5rem;
 }
 
-.closing-eyebrow {
+.cta-eyebrow {
   font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 600;
@@ -2548,7 +2548,7 @@ body::before {
   display: block;
 }
 
-.closing-headline {
+.cta-headline {
   font-family: var(--font-title);
   font-size: clamp(2.8rem, 5.5vw, 5.2rem);
   font-weight: 400;
@@ -2577,7 +2577,7 @@ body::before {
   will-change: transform, opacity;
 }
 
-.closing-subtext {
+.cta-subtext {
   font-family: var(--font-body);
   font-size: clamp(1rem, 1.2vw, 1.15rem);
   font-weight: 400;
@@ -2659,7 +2659,7 @@ body::before {
   transform: scale(1) rotate(0deg);
 }
 
-.closing-friction {
+.cta-friction {
   font-family: var(--font-body);
   font-size: 0.85rem;
   color: #888888;
