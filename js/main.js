@@ -465,12 +465,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // G. TESTIMONIALS & BEFORE/AFTER SHOWCASE REVEAL
     const testimonialsSection = document.querySelector('.testimonials-section');
     if (testimonialsSection) {
-      const testTl = gsap.timeline({
-        scrollTrigger: { trigger: testimonialsSection, start: 'top 80%', toggleActions: 'play reverse play reverse' }
-      });
-      testTl.fromTo(['.testimonials-header', '.ba-showcase'],
-        { ...IR, opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'expo.out' }
+      gsap.fromTo(['.testimonials-header', '.ba-showcase'],
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: 0.12,
+          ease: 'expo.out',
+          scrollTrigger: { trigger: testimonialsSection, start: 'top 80%', once: true },
+          onComplete: () => {
+            gsap.set(['.testimonials-header', '.ba-showcase'], {
+              opacity: 1,
+              clearProps: 'opacity,transform'
+            });
+          }
+        }
       );
     }
 
@@ -478,18 +488,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const faqSection = document.getElementById('faq');
     const faqItemsArr = gsap.utils.toArray('.faq-item');
     if (faqSection) {
-      const faqTl = gsap.timeline({
-        scrollTrigger: { trigger: faqSection, start: 'top 80%', toggleActions: 'play reverse play reverse' }
-      });
-      faqTl.fromTo('.faq-left',
-        { ...IR, opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' }
+      gsap.fromTo('.faq-left',
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power4.out',
+          scrollTrigger: { trigger: faqSection, start: 'top 80%', once: true },
+          onComplete: () => {
+            gsap.set('.faq-left', { opacity: 1, clearProps: 'opacity,transform' });
+          }
+        }
       );
       if (faqItemsArr.length > 0) {
-        faqTl.fromTo(faqItemsArr,
-          { ...IR, opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 0.75, stagger: 0.08, ease: 'power4.out' },
-          '-=0.5'
+        gsap.fromTo(faqItemsArr,
+          { opacity: 0, y: 25 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.75,
+            stagger: 0.08,
+            ease: 'power4.out',
+            scrollTrigger: { trigger: faqSection, start: 'top 80%', once: true },
+            onComplete: () => {
+              gsap.set(faqItemsArr, { opacity: 1, clearProps: 'opacity,transform' });
+            }
+          }
         );
       }
     }
