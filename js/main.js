@@ -546,10 +546,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (storyBtns.length > 0 && caseMockup) {
     storyBtns.forEach(btn => {
+      btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
       btn.addEventListener('click', () => {
         const stage = btn.getAttribute('data-stage');
-        storyBtns.forEach(b => b.classList.remove('active'));
+        storyBtns.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
 
         caseMockup.className = 'case-browser-mockup stage-' + stage;
         if (typeof ScrollTrigger !== 'undefined') {
