@@ -27,11 +27,14 @@
 
 <body>
 
+  <!-- Skip to Main Content Link for Keyboard & Screen Reader Accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <!-- Floating Premium Navigation Bar -->
   <header class="header" id="header">
     <div class="nav-container">
-      <a href="#" class="logo">FLINT CO.</a>
-      <nav class="nav-links">
+      <a href="#" class="logo" aria-label="Flint Co. Homepage">FLINT CO.</a>
+      <nav class="nav-links" aria-label="Main Navigation">
         <a href="#work" class="nav-link">Work</a>
         <a href="#process" class="nav-link">Process</a>
         <a href="#services" class="nav-link">Services</a>
@@ -41,7 +44,7 @@
       <div class="nav-actions">
 
         <a href="#inquire" class="cta-button">Start Your Project</a>
-        <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Toggle Navigation Menu">
+        <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="mobile-menu">
           <span class="bar"></span>
           <span class="bar"></span>
         </button>
@@ -50,7 +53,7 @@
   </header>
 
   <!-- Mobile Navigation Drawer Overlay -->
-  <div class="mobile-menu-overlay" id="mobile-menu">
+  <div class="mobile-menu-overlay" id="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile Navigation">
     <nav class="mobile-nav-links">
       <a href="#work" class="mobile-nav-link">Work</a>
       <a href="#process" class="mobile-nav-link">Process</a>
@@ -64,7 +67,7 @@
     </nav>
   </div>
 
-  <main>
+  <main id="main-content">
     <!-- Full-Screen Hero Section -->
     <section class="hero-section" id="hero">
       <div class="hero-container">
@@ -770,14 +773,14 @@
 
           <!-- FAQ 1 -->
           <div class="faq-item reveal">
-            <div class="faq-question">
-              <h3 class="faq-question-text">How does Flint Co. guarantee conversion improvements?</h3>
-              <div class="faq-toggle">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-1" id="faq-q1">
+              <span class="faq-question-text">How does Flint Co. guarantee conversion improvements?</span>
+              <span class="faq-toggle" aria-hidden="true">
                 <span class="toggle-line line-h"></span>
                 <span class="toggle-line line-v"></span>
-              </div>
-            </div>
-            <div class="faq-answer">
+              </span>
+            </button>
+            <div class="faq-answer" id="faq-answer-1" role="region" aria-labelledby="faq-q1">
               <div class="faq-answer-inner">
                 <p class="faq-answer-text">
                   We don't rely on generic aesthetic templates or trendy gradients. We systematically audit your
@@ -790,14 +793,14 @@
 
           <!-- FAQ 2 -->
           <div class="faq-item reveal">
-            <div class="faq-question">
-              <h3 class="faq-question-text">What industries or niches do you specialize in?</h3>
-              <div class="faq-toggle">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-2" id="faq-q2">
+              <span class="faq-question-text">What industries or niches do you specialize in?</span>
+              <span class="faq-toggle" aria-hidden="true">
                 <span class="toggle-line line-h"></span>
                 <span class="toggle-line line-v"></span>
-              </div>
-            </div>
-            <div class="faq-answer">
+              </span>
+            </button>
+            <div class="faq-answer" id="faq-answer-2" role="region" aria-labelledby="faq-q2">
               <div class="faq-answer-inner">
                 <p class="faq-answer-text">
                   We partner exclusively with high-ticket B2B service firms, sovereign wealth advisors, luxury
@@ -810,14 +813,14 @@
 
           <!-- FAQ 3 -->
           <div class="faq-item reveal">
-            <div class="faq-question">
-              <h3 class="faq-question-text">How do your services integrate with our existing workflows?</h3>
-              <div class="faq-toggle">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-3" id="faq-q3">
+              <span class="faq-question-text">How do your services integrate with our existing workflows?</span>
+              <span class="faq-toggle" aria-hidden="true">
                 <span class="toggle-line line-h"></span>
                 <span class="toggle-line line-v"></span>
-              </div>
-            </div>
-            <div class="faq-answer">
+              </span>
+            </button>
+            <div class="faq-answer" id="faq-answer-3" role="region" aria-labelledby="faq-q3">
               <div class="faq-answer-inner">
                 <p class="faq-answer-text">
                   We operate as a high-performance external partner. We coordinate with your marketing and business
@@ -830,14 +833,14 @@
 
           <!-- FAQ 4 -->
           <div class="faq-item reveal">
-            <div class="faq-question">
-              <h3 class="faq-question-text">What is the typical investment for a partnership?</h3>
-              <div class="faq-toggle">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-4" id="faq-q4">
+              <span class="faq-question-text">What is the typical investment for a partnership?</span>
+              <span class="faq-toggle" aria-hidden="true">
                 <span class="toggle-line line-h"></span>
                 <span class="toggle-line line-v"></span>
-              </div>
-            </div>
-            <div class="faq-answer">
+              </span>
+            </button>
+            <div class="faq-answer" id="faq-answer-4" role="region" aria-labelledby="faq-q4">
               <div class="faq-answer-inner">
                 <p class="faq-answer-text">
                   Every mandate we execute is bespoke. Fees are structured around your commercial target outcomes and
@@ -878,7 +881,7 @@
         <div class="flint-gap-reveal"></div>
       </div>
 
-      <canvas id="cta-particle-canvas" class="cta-particle-canvas"></canvas>
+      <canvas id="cta-particle-canvas" class="cta-particle-canvas" aria-hidden="true"></canvas>
       <div class="cta-container">
         <!-- Central Typography Header (Vertical Flex Container) -->
         <div class="cta-content">
@@ -911,7 +914,7 @@
 
     <!-- Standalone Premium Footer (Extension of the Forge) -->
     <footer class="main-footer">
-      <canvas id="footer-embers-canvas" class="footer-embers-canvas"></canvas>
+      <canvas id="footer-embers-canvas" class="footer-embers-canvas" aria-hidden="true"></canvas>
       <div class="footer-container">
 
         <!-- Left Column: Branding and Statement -->

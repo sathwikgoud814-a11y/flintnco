@@ -127,9 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (mobileToggle && mobileMenu) {
     const toggleMenu = () => {
-      mobileToggle.classList.toggle('active');
+      const isExpanded = mobileToggle.classList.toggle('active');
       mobileMenu.classList.toggle('active');
-      if (mobileMenu.classList.contains('active')) {
+      mobileToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+      mobileMenu.setAttribute('aria-hidden', isExpanded ? 'false' : 'true');
+
+      if (isExpanded) {
         document.body.style.overflow = 'hidden';
         if (lenis) lenis.stop();
       } else {
@@ -144,6 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
       link.addEventListener('click', () => {
         mobileToggle.classList.remove('active');
         mobileMenu.classList.remove('active');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
         if (lenis) lenis.start();
       });
@@ -515,12 +520,16 @@ document.addEventListener('DOMContentLoaded', () => {
         faqItems.forEach(otherItem => {
           if (otherItem !== item) {
             otherItem.classList.remove('active');
+            const otherBtn = otherItem.querySelector('.faq-question');
+            if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
           }
         });
         if (isActive) {
           item.classList.remove('active');
+          question.setAttribute('aria-expanded', 'false');
         } else {
           item.classList.add('active');
+          question.setAttribute('aria-expanded', 'true');
         }
         if (typeof ScrollTrigger !== 'undefined') {
           ScrollTrigger.refresh();
