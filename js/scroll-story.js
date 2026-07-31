@@ -1,219 +1,126 @@
 /**
- * scroll-story.js — Flint Co. Editorial Scroll Storytelling Engine
+ * scroll-story.js — Flint Co. 400vh Sticky Editorial Storytelling Engine
  * 
- * SENIOR MOTION SYSTEM ENHANCEMENTS:
- * 1. SVG Path Drawing: High-precision line drawing (`strokeDashoffset` from `len` to `0`) and fill flood.
- * 2. Layered Parallax: Independent depth offsets between SVG background structures and foreground artwork.
- * 3. Tiny Gold Sparks: Warm gold spark nodes traveling along vector paths.
- * 4. Subtle Looping Idle Animation: Restrained 4-second breathing float (`active-idle`) when a chapter is active.
- * 5. Responsive GSAP matchMedia: Clean context teardown and rebuild across all viewports.
+ * Architecture:
+ * 1. Wrapper height: 400vh (#scroll-story-section)
+ * 2. Sticky container: .story-sticky-stage (position: sticky; top: 0; height: 100vh)
+ * 3. ALL 4 scenes exist inside sticky container
+ * 4. GSAP Timeline spans 0-100% of 400vh:
+ *    - 0–25%: Scene 1
+ *    - 25–50%: Scene 2
+ *    - 50–75%: Scene 3
+ *    - 75–100%: Scene 4
+ * 5. Overlapping transitions between scenes
+ * 6. Sticky container releases naturally after Scene 4 completes
  */
 
 (function () {
   'use strict';
 
-  var CHAPTERS = 4;
-
-  function init() {
+  function initScrollStory() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-      console.warn('[scroll-story] GSAP / ScrollTrigger not loaded.');
+      console.warn('[scroll-story] GSAP or ScrollTrigger missing.');
       return;
     }
+
     gsap.registerPlugin(ScrollTrigger);
 
-    var section = document.getElementById('scroll-story-section');
-    if (!section) return;
+    var wrapper = document.getElementById('scroll-story-section');
+    if (!wrapper) return;
 
-    var slides = gsap.utils.toArray('.chapter-slide',      section);
-    var texts  = gsap.utils.toArray('.chapter-text-slide', section);
-    var dots   = gsap.utils.toArray('.chapter-dot',        section);
+    var scenes = gsap.utils.toArray('.story-scene', wrapper);
+    if (scenes.length < 4) return;
 
-    if (slides.length < CHAPTERS || texts.length < CHAPTERS) return;
+    // 1. Initial State Setup
+    scenes.forEach(function (scene, i) {
+      var illus = scene.querySelector('.story-illus-container');
+      var text  = scene.querySelector('.story-text-block');
 
-    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var mm = gsap.matchMedia();
-
-    function buildStoryContext(isMobile) {
-      // 1. Measure & prepare SVG path elements
-      var slideData = slides.map(function (slide, chapIdx) {
-        var fgElements = [];
-        var bgElements = [];
-        var paths = slide.querySelectorAll('path, circle, ellipse, line, polyline, polygon');
-        
-        paths.forEach(function (el, idx) {
-          try {
-            var len = el.getTotalLength();
-            if (len > 0) {
-              var rawFill = el.getAttribute('fill');
-              var strokeColor = (rawFill && rawFill !== 'none') ? rawFill : '#D4AF37';
-
-              if (chapIdx === 0) {
-                gsap.set(el, {
-                  stroke: strokeColor,
-                  strokeWidth: 1.2,
-                  strokeDasharray: len,
-                  strokeDashoffset: 0,
-                  fillOpacity: 1,
-                  strokeOpacity: 0.3
-                });
-              } else {
-                gsap.set(el, {
-                  stroke: strokeColor,
-                  strokeWidth: 1.2,
-                  strokeDasharray: len,
-                  strokeDashoffset: len,
-                  fillOpacity: 0,
-                  strokeOpacity: 1
-                });
-              }
-
-              // Categorize into background frame vs foreground path layers for depth parallax
-              if (idx % 2 === 0) {
-                bgElements.push(el);
-              } else {
-                fgElements.push(el);
-              }
-            }
-          } catch (_) {}
-        });
-
-        return { fg: fgElements, bg: bgElements, all: fgElements.concat(bgElements) };
+      gsap.set(scene, {
+        visibility: 'visible',
+        opacity: i === 0 ? 1 : 0
       });
 
-      // 2. Set initial slide & text positions
-      slides.forEach(function (slide, idx) {
-        gsap.set(slide, {
-          opacity: idx === 0 ? 1 : 0,
-          visibility: idx === 0 ? 'visible' : 'hidden',
-          x: (idx === 0 || isMobile) ? 0 : 25,
-          y: (idx !== 0 && isMobile) ? 10 : 0
-        });
-
-        if (idx === 0) {
-          slide.classList.add('active-idle');
-        } else {
-          slide.classList.remove('active-idle');
-        }
-      });
-
-      texts.forEach(function (text, idx) {
-        gsap.set(text, {
-          opacity: idx === 0 ? 1 : 0,
-          visibility: idx === 0 ? 'visible' : 'hidden',
-          x: (idx === 0 || isMobile) ? 0 : 20,
-          y: (idx !== 0 && isMobile) ? 8 : 0
-        });
-      });
-
-      dots.forEach(function (d, idx) {
-        d.classList.toggle('active', idx === 0);
-      });
-
-      // 3. Scrubbed Master Timeline
-      var tl = gsap.timeline({ defaults: { ease: 'none' } });
-
-      function addChapterAnimation(chapIdx, startProgress) {
-        var data = slideData[chapIdx];
-        if (!data || data.all.length === 0) return;
-
-        var drawDuration = (chapIdx === 3) ? 0.50 : 0.40;
-        var fillDuration = (chapIdx === 3) ? 0.25 : 0.18;
-
-        // Phase A: Line Drawing Sequence
-        tl.to(data.all, {
-          strokeDashoffset: 0,
-          duration: drawDuration,
-          ease: 'power1.out'
-        }, startProgress);
-
-        // Phase B: Layered Depth Parallax (Foreground paths shift slightly relative to background)
-        if (data.fg.length > 0 && !isMobile && !prefersReduced) {
-          tl.to(data.fg, {
-            y: -6,
-            duration: drawDuration * 0.8,
-            ease: 'sine.out'
-          }, startProgress + 0.05);
-        }
-
-        // Phase C: Fill Flood
-        tl.to(data.all, {
-          fillOpacity: 1,
-          strokeOpacity: 0.3,
-          duration: fillDuration,
-          ease: 'power2.inOut'
-        }, startProgress + 0.20);
+      if (i === 0) {
+        if (illus) gsap.set(illus, { opacity: 1, y: 0, scale: 1 });
+        if (text)  gsap.set(text,  { opacity: 1, y: 0 });
+      } else {
+        if (illus) gsap.set(illus, { opacity: 0, y: 20, scale: 1.02 });
+        if (text)  gsap.set(text,  { opacity: 0, y: 20 });
       }
-
-      // Build chapter transitions
-      for (var i = 0; i < CHAPTERS; i++) {
-        if (i > 0) {
-          var prev = i - 1;
-          var curr = i;
-          var transitionOut = prev * 1.0 + 0.65;
-          var transitionIn  = curr * 1.0;
-
-          var moveOutProps = isMobile ? { opacity: 0, y: -10, duration: 0.18, ease: 'power2.in' } : { opacity: 0, x: -25, duration: 0.18, ease: 'power2.in' };
-          var textOutProps = isMobile ? { opacity: 0, y: -8, duration: 0.18, ease: 'power2.in' } : { opacity: 0, x: -20, duration: 0.18, ease: 'power2.in' };
-
-          var moveInProps = isMobile ? { opacity: 1, y: 0, duration: 0.20, ease: 'power2.out' } : { opacity: 1, x: 0, duration: 0.20, ease: 'power2.out' };
-          var textInProps = isMobile ? { opacity: 1, y: 0, duration: 0.20, ease: 'power2.out' } : { opacity: 1, x: 0, duration: 0.20, ease: 'power2.out' };
-
-          tl.to(slides[prev], moveOutProps, transitionOut);
-          tl.to(texts[prev],  textOutProps, transitionOut);
-          tl.set(slides[prev], { visibility: 'hidden' }, transitionOut + 0.18);
-          tl.set(texts[prev],  { visibility: 'hidden' }, transitionOut + 0.18);
-
-          tl.set(slides[curr], { visibility: 'visible' }, transitionIn);
-          tl.set(texts[curr],  { visibility: 'visible' }, transitionIn);
-          tl.to(slides[curr], moveInProps, transitionIn);
-          tl.to(texts[curr],  textInProps, transitionIn);
-
-          addChapterAnimation(curr, transitionIn + 0.08);
-        }
-      }
-
-      // 4. ScrollTrigger Controller
-      ScrollTrigger.create({
-        trigger:             section,
-        start:               'top top',
-        end:                 isMobile ? '+=140%' : '+=165%',
-        pin:                 true,
-        anticipatePin:       1,
-        invalidateOnRefresh: true,
-        refreshPriority:     1,
-        scrub:               0.4,
-        animation:           tl,
-        onUpdate: (function () {
-          var activeChap = -1;
-          return function (self) {
-            var progress = Math.max(0, Math.min(0.999, self.progress));
-            var chap = Math.floor(progress * CHAPTERS);
-            if (chap !== activeChap) {
-              activeChap = chap;
-              dots.forEach(function (d, idx) {
-                d.classList.toggle('active', idx === chap);
-              });
-              slides.forEach(function (s, idx) {
-                s.classList.toggle('active-idle', idx === chap);
-              });
-            }
-          };
-        })()
-      });
-    }
-
-    mm.add("(min-width: 769px)", function () {
-      buildStoryContext(false);
     });
 
-    mm.add("(max-width: 768px)", function () {
-      buildStoryContext(true);
+    // 2. GSAP Timeline mapped across 0% to 100% of 400vh scroll progress
+    var tl = gsap.timeline({
+      defaults: { ease: 'none' } // Continuous linear mapping for scroll scrub
+    });
+
+    var STAGGER = 0.02; // Stagger offset for text (~80ms equivalent)
+
+    // --- SCENE 1 (0% to 25%) ---
+    // Hold Scene 1 until 17% progress
+    tl.to({}, { duration: 0.17 }, 0);
+
+    // Transition Scene 1 -> Scene 2 (starts at 17%, ends at 27%)
+    tl.to(scenes[0], { opacity: 0, duration: 0.10 }, 0.17);
+    tl.to(scenes[0].querySelector('.story-illus-container'), { opacity: 0, y: -20, scale: 0.98, duration: 0.10 }, 0.17);
+    tl.to(scenes[0].querySelector('.story-text-block'),      { opacity: 0, y: -20, scale: 0.98, duration: 0.10 }, 0.17 + STAGGER);
+
+    // Incoming Scene 2 (starts at 21%, overlapping by 60% of transition)
+    tl.to(scenes[1], { opacity: 1, duration: 0.10 }, 0.21);
+    tl.to(scenes[1].querySelector('.story-illus-container'), { opacity: 1, y: 0, scale: 1.0, duration: 0.10 }, 0.21);
+    tl.to(scenes[1].querySelector('.story-text-block'),      { opacity: 1, y: 0, scale: 1.0, duration: 0.10 }, 0.21 + STAGGER);
+
+    // --- SCENE 2 (25% to 50%) ---
+    // Hold Scene 2 until 42% progress
+    tl.to({}, { duration: 0.11 }, 0.31);
+
+    // Transition Scene 2 -> Scene 3 (starts at 42%, ends at 52%)
+    tl.to(scenes[1], { opacity: 0, duration: 0.10 }, 0.42);
+    tl.to(scenes[1].querySelector('.story-illus-container'), { opacity: 0, y: -20, scale: 0.98, duration: 0.10 }, 0.42);
+    tl.to(scenes[1].querySelector('.story-text-block'),      { opacity: 0, y: -20, scale: 0.98, duration: 0.10 }, 0.42 + STAGGER);
+
+    // Incoming Scene 3 (starts at 46%, overlapping)
+    tl.to(scenes[2], { opacity: 1, duration: 0.10 }, 0.46);
+    tl.to(scenes[2].querySelector('.story-illus-container'), { opacity: 1, y: 0, scale: 1.0, duration: 0.10 }, 0.46);
+    tl.to(scenes[2].querySelector('.story-text-block'),      { opacity: 1, y: 0, scale: 1.0, duration: 0.10 }, 0.46 + STAGGER);
+
+    // --- SCENE 3 (50% to 75%) ---
+    // Hold Scene 3 until 67% progress
+    tl.to({}, { duration: 0.11 }, 0.56);
+
+    // Transition Scene 3 -> Scene 4 (starts at 67%, ends at 77%)
+    tl.to(scenes[2], { opacity: 0, duration: 0.10 }, 0.67);
+    tl.to(scenes[2].querySelector('.story-illus-container'), { opacity: 0, y: -20, scale: 0.98, duration: 0.10 }, 0.67);
+    tl.to(scenes[2].querySelector('.story-text-block'),      { opacity: 0, y: -20, scale: 0.98, duration: 0.10 }, 0.67 + STAGGER);
+
+    // Incoming Scene 4 (starts at 71%, overlapping)
+    tl.to(scenes[3], { opacity: 1, duration: 0.10 }, 0.71);
+    tl.to(scenes[3].querySelector('.story-illus-container'), { opacity: 1, y: 0, scale: 1.0, duration: 0.10 }, 0.71);
+    tl.to(scenes[3].querySelector('.story-text-block'),      { opacity: 1, y: 0, scale: 1.0, duration: 0.10 }, 0.71 + STAGGER);
+
+    // --- SCENE 4 (75% to 100%) ---
+    // Hold Scene 4 visible for the remainder of the 400vh wrapper
+    tl.to({}, { duration: 0.19 }, 0.81);
+
+    // 3. ScrollTrigger Controller mapping the 400vh wrapper to timeline
+    ScrollTrigger.create({
+      trigger: wrapper,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.5,
+      animation: tl,
+      invalidateOnRefresh: true
     });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', initScrollStory);
   } else {
-    init();
+    initScrollStory();
   }
-}());
+})();
+
+
+
+

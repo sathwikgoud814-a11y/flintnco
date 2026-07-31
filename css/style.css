@@ -267,8 +267,9 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #111111;
-  color: #FFFFFF;
+  background-color: #FFFFFF;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
   border: 1px solid #111111;
   padding: 0.75rem 1.6rem;
   border-radius: 100px;
@@ -286,9 +287,38 @@ body::before {
 
 .cta-button:hover {
   background-color: #D4AF37;
-  color: #111111;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
   border-color: #D4AF37;
   transform: scale(1.03) translateY(-1px);
+}
+
+.cta-button:active {
+  background-color: #D4AF37;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  border-color: #D4AF37;
+  transform: scale(0.98);
+}
+
+.cta-button:focus,
+.cta-button:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+  background-color: #FFFFFF;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+.cta-button:disabled,
+.cta-button[disabled],
+.cta-button.disabled {
+  background-color: #E5E5E5;
+  color: #333333 !important;
+  -webkit-text-fill-color: #333333 !important;
+  border-color: #CCCCCC;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 /* -------------------------------------------------------------
@@ -318,13 +348,17 @@ body::before {
 
 .header.navbar-dark .cta-button {
   background-color: #FFFFFF;
-  color: #090909;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
   border-color: #FFFFFF;
 }
 
-.header.navbar-dark .cta-button:hover {
+.header.navbar-dark .cta-button:hover,
+.header.navbar-dark .cta-button:focus,
+.header.navbar-dark .cta-button:focus-visible {
   background-color: #D4AF37;
-  color: #090909;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
   border-color: #D4AF37;
 }
 
@@ -758,78 +792,90 @@ body::before {
 /* -------------------------------------------------------------
    Pinned Scroll Storytelling Section (4 Chapters)
    ------------------------------------------------------------- */
+.scroll-story-wrapper,
 .chapter-pin-section {
   width: 100%;
-  min-height: 100vh;
+  height: 400vh;
   background-color: var(--bg);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   z-index: 10;
+}
+
+.story-sticky-stage,
+.chapter-pin-stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--container-padding, 2rem);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.chapter-pin-stage {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 5rem;
-  align-items: center;
-  width: 100%;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 4rem var(--container-padding);
-  position: relative;
-}
-
-.chapter-svg-col {
-  width: 100%;
-  position: relative;
-}
-
-.chapter-illus-container {
-  width: 100%;
-  aspect-ratio: 1536 / 1024;
-  position: relative;
   overflow: hidden;
 }
 
-.chapter-slide {
+.story-scene {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 4rem;
+  padding: 4rem var(--container-padding, 2rem);
+  opacity: 0;
+  visibility: hidden;
   will-change: transform, opacity;
 }
 
-.chapter-svg {
+.story-scene.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.story-illus-col {
+  flex: 1 1 48%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 600px;
   width: 100%;
-  height: 108%;
-  margin-top: -4%;
+}
+
+.story-illus-container {
+  width: 100%;
+  aspect-ratio: 1536 / 1024;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+.story-illus-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   display: block;
 }
 
-.chapter-text-col {
+.story-text-col {
+  flex: 1 1 52%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-start;
-  position: relative;
-  min-height: 420px;
-  padding-bottom: 5rem;
+  justify-content: center;
 }
 
-.chapter-text-slide {
-  position: absolute;
-  top: 0;
-  left: 0;
+.story-text-block {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  max-width: 540px;
   will-change: transform, opacity;
 }
 
@@ -865,29 +911,46 @@ body::before {
   line-height: 1.8;
   color: var(--text-secondary);
   max-width: 520px;
-  margin-bottom: 2.5rem;
 }
 
-/* Progress Indicator Dots - Flows naturally 2.5rem below body paragraph inside text slide */
-.chapter-progress {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 0;
-  z-index: 10;
+@media (max-width: 860px) {
+  .story-scene {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+    padding: 3rem 1.5rem;
+    text-align: center;
+  }
+  .story-illus-col,
+  .story-text-col {
+    flex: 1 1 100%;
+    max-width: 100%;
+    align-items: center;
+  }
+  .story-text-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
-.chapter-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--border-color);
-  transition: background-color 0.4s var(--ease-editorial), transform 0.4s var(--ease-editorial);
-}
-
-.chapter-dot.active {
-  background-color: var(--accent);
-  transform: scale(1.3);
+@media (max-width: 860px) {
+  .carousel-flex-layout {
+    flex-direction: column;
+    gap: 2.5rem;
+    text-align: center;
+  }
+  .carousel-illus-col,
+  .carousel-text-col {
+    flex: 1 1 100%;
+    max-width: 100%;
+    align-items: center;
+  }
+  .carousel-text-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 @media (max-width: 900px) {
@@ -1251,19 +1314,29 @@ body::before {
 }
 
 .step-dot {
-  width: 23px;
-  height: 23px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background-color: var(--bg);
-  border: 1px solid var(--border-color);
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  opacity: 0.6;
+  transform: scale(1);
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, background-color;
 }
 
-/* Light up the indicator dots when steps scroll into viewport */
-.timeline-step.revealed .step-dot {
-  border-color: var(--accent);
-  background-color: var(--accent);
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
+/* Active node state: filled gold, scale 1.15, opacity 1 */
+.timeline-step.active .step-dot,
+.step-dot.active {
+  background-color: var(--accent, #D4AF37);
+  border-color: var(--accent, #D4AF37);
+  transform: scale(1.15);
+  opacity: 1;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.45);
 }
 
 .step-content {
@@ -2483,7 +2556,7 @@ body::before {
   font-weight: 400;
   line-height: 1.12;
   color: #FFFFFF;
-  margin-bottom: 1.8rem;
+  margin-bottom: 32px; /* Heading -> Paragraph: 32px */
   max-width: 900px;
 }
 
@@ -2513,17 +2586,10 @@ body::before {
   line-height: 1.7;
   color: #B8B8B8;
   max-width: 620px;
-  margin-bottom: 3rem;
+  margin-bottom: 40px; /* Paragraph -> Button: 40px */
 }
 
-.closing-cta-btn-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-}
-
-/* CTA Primary Button: Refined Forged Dark Matte + Gold Accents + Hover Micro-Glow */
+/* CTA Primary Button */
 .cta-btn-primary {
   display: inline-flex;
   align-items: center;
@@ -2544,6 +2610,7 @@ body::before {
   text-decoration: none;
   opacity: 1;
   visibility: visible;
+  margin-bottom: 32px; /* Button -> Discovery text: 32px */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: background-color, color, border-color, box-shadow, transform;
@@ -3290,94 +3357,82 @@ html.light-theme .ba-dot {
 }
 
 /* Pinned stage — 100vh height viewport */
+.story-sticky-stage,
 .chapter-pin-stage {
-  position: relative;
-  height: 80vh; min-height: 580px; max-height: 720px;
+  position: sticky;
+  top: 0;
   width: 100%;
+  height: 100vh;
   max-width: 1400px;
   margin: 0 auto;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  padding: 0 var(--padding-x);
-}
-
-
-
-/* ── Left Column — 48% — ONE large illustration container ── */
-.chapter-svg-col {
-  width: 48%;
-  flex-shrink: 0;
+  padding: 0 var(--container-padding, 2rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  overflow: hidden;
 }
 
-/* Single container that holds ALL slides stacked */
-.chapter-illus-container {
-  position: relative;
-  width: 100%;
-  max-width: 620px;   /* Expansive desktop illustration cap */
-  aspect-ratio: 4 / 3;
-  flex-shrink: 0;
-}
-
-/* Each slide: absolutely stacked inside the same container */
-.chapter-slide {
+.story-scene {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+  padding: 4rem var(--container-padding, 2rem);
+  opacity: 0;
+  visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.story-scene.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.story-illus-col {
+  flex: 1 1 48%;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transform: translateX(40px);
-  will-change: opacity, transform;
-  pointer-events: none;
+  max-width: 600px;
+  width: 100%;
 }
 
-.chapter-svg {
+.story-illus-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1536 / 1024;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+.story-illus-img {
   width: 100%;
   height: 100%;
-  max-width: 620px;
-  color: var(--text-secondary);
-  overflow: visible;
+  object-fit: contain;
   display: block;
 }
 
-.chapter-svg path,
-.chapter-svg circle,
-.chapter-svg line,
-.chapter-svg polyline,
-.chapter-svg polygon {
-  vector-effect: non-scaling-stroke;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.chapter-svg-accent {
-  stroke: var(--accent) !important;
-}
-
-/* ── Right Column — 52% — ONE text block visible at a time ── */
-.chapter-text-col {
-  width: 52%;
-  flex-shrink: 0;
-  padding-left: 4rem;
-  position: relative;
-  min-height: 280px;
+.story-text-col {
+  flex: 1 1 52%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 }
 
-.chapter-text-slide {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%) translateX(30px);
-  opacity: 0;
-  will-change: opacity, transform;
+.story-text-block {
+  width: 100%;
+  max-width: 540px;
+  will-change: transform, opacity;
 }
 
 .chapter-eyebrow {
@@ -3415,31 +3470,43 @@ html.light-theme .ba-dot {
   max-width: 520px;
 }
 
-
-/* ── Progress dots — absolute within sticky stage ── */
-.chapter-progress {
-  position: absolute;
-  bottom: 2.8rem;
-  left: 50%;
-  transform: translateX(-50%);
+/* Centered Progress dots */
+.chapter-progress,
+.carousel-pagination {
   display: flex;
-  gap: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 2rem;
+  width: 100%;
   z-index: 10;
 }
 
+.carousel-pagination .chapter-dot,
 .chapter-dot {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: var(--border-color);
-  transition: background 0.4s ease, transform 0.4s ease;
-  display: block;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
   flex-shrink: 0;
+  display: inline-block;
 }
 
+.carousel-pagination .chapter-dot:hover,
+.chapter-dot:hover {
+  background-color: rgba(212, 175, 55, 0.6);
+  transform: scale(1.2);
+}
+
+.carousel-pagination .chapter-dot.active,
 .chapter-dot.active {
-  background: var(--accent);
-  transform: scale(1.4);
+  background-color: var(--accent, #D4AF37);
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
 }
 
 

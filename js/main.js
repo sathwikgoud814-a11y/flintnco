@@ -68,23 +68,27 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', handleScroll, { passive: true });
   handleScroll();
 
-  const darkSections = document.querySelectorAll('#inquire, #work');
-  if (darkSections.length > 0 && header && 'IntersectionObserver' in window) {
-    const navObserver = new IntersectionObserver((entries) => {
-      let isOverDark = false;
+  // ONE source of truth observer attached ONLY to the CTA section wrapper (#inquire)
+  if (ctaSection && header && 'IntersectionObserver' in window) {
+    const ctaObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
+        // Starts when ~25% of CTA section enters viewport
         if (entry.isIntersecting) {
-          isOverDark = true;
+          header.classList.add('navbar-dark');
+        } else {
+          // If scrolled down past CTA into Footer (top < 0), stay BLACK.
+          // If scrolled back UP past CTA into upper sections (top > 0), return to WHITE.
+          const top = entry.boundingClientRect.top;
+          if (top < 0) {
+            header.classList.add('navbar-dark');
+          } else {
+            header.classList.remove('navbar-dark');
+          }
         }
       });
-      if (isOverDark) {
-        header.classList.add('navbar-dark');
-      } else {
-        header.classList.remove('navbar-dark');
-      }
-    }, { threshold: 0.2 });
+    }, { threshold: 0.25 });
 
-    darkSections.forEach(sec => navObserver.observe(sec));
+    ctaObserver.observe(ctaSection);
   }
 
   // Active Section Indicator Tracking (IntersectionObserver - Zero Layout Thrashing)
@@ -283,26 +287,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (timelineSteps.length > 0) {
+      const setActiveStep = (activeStep) => {
+        timelineSteps.forEach((step) => {
+          const dot = step.querySelector('.step-dot');
+          if (step === activeStep) {
+            step.classList.add('active');
+            if (dot) dot.classList.add('active');
+          } else {
+            step.classList.remove('active');
+            if (dot) dot.classList.remove('active');
+          }
+        });
+      };
+
+      // Set first step active initially
+      setActiveStep(timelineSteps[0]);
+
       timelineSteps.forEach((step) => {
         const stepNum   = step.querySelector('.step-meta');
         const stepTitle = step.querySelector('.step-title');
         const stepDesc  = step.querySelector('.step-desc');
-        const stepDot   = step.querySelector('.step-dot');
+
+        ScrollTrigger.create({
+          trigger: step,
+          start: 'top 60%',
+          end: 'bottom 40%',
+          onEnter:     () => setActiveStep(step),
+          onEnterBack: () => setActiveStep(step)
+        });
 
         const stepTl = gsap.timeline({
           scrollTrigger: {
             trigger: step,
             start: 'top 85%',
-            toggleActions: 'play reverse play reverse',
-            onEnter:     () => step.classList.add('revealed'),
-            onLeaveBack: () => step.classList.remove('revealed')
+            toggleActions: 'play reverse play reverse'
           }
         });
 
-        if (stepDot)   stepTl.fromTo(stepDot,   { ...IR, scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.5)' });
-        if (stepNum)   stepTl.fromTo(stepNum,   { ...IR, opacity: 0, y: 15 },      { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' }, '-=0.2');
-        if (stepTitle) stepTl.fromTo(stepTitle, { ...IR, opacity: 0, y: 30 },      { opacity: 1, y: 0, duration: 0.75, ease: 'power4.out' }, '-=0.35');
-        if (stepDesc)  stepTl.fromTo(stepDesc,  { ...IR, opacity: 0, y: 20 },      { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, '-=0.45');
+        if (stepNum)   stepTl.fromTo(stepNum,   { ...IR, opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power4.out' });
+        if (stepTitle) stepTl.fromTo(stepTitle, { ...IR, opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.75, ease: 'power4.out' }, '-=0.35');
+        if (stepDesc)  stepTl.fromTo(stepDesc,  { ...IR, opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power4.out' }, '-=0.45');
       });
     }
 
@@ -481,13 +505,34 @@ document.addEventListener('DOMContentLoaded', () => {
         .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
       gsap.fromTo(
-        ['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.cta-anim-btn', '.flint-spark', '#cta-particle-canvas'],
+        ['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.closing-friction', '.flint-spark', '#cta-particle-canvas'],
         { opacity: 0, y: 15 },
         {
           opacity: 1, y: 0, duration: 0.85, stagger: 0.08, ease: 'power4.out',
           scrollTrigger: { trigger: ctaSection, start: 'top 88%', once: true }
         }
       );
+
+      const ctaBtn = document.querySelector('.cta-btn-primary');
+      if (ctaBtn) {
+        gsap.fromTo(ctaBtn,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: ctaSection, start: 'top 88%', once: true },
+            onComplete: () => {
+              gsap.set(ctaBtn, {
+                opacity: 1,
+                clearProps: 'transform',
+                pointerEvents: 'auto'
+              });
+            }
+          }
+        );
+      }
     }
 
     // J. FOOTER REVEAL
