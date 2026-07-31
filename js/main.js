@@ -208,11 +208,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const IR = { immediateRender: false };
 
     // A. HERO SECTION REVEAL
+    const heroEls = ['.hero-headline', '.hero-headline em', '.hero-paragraph', '.btn-primary', '.btn-secondary', '#parallax-browser', '.hero-scroll-indicator'];
     const heroTl = gsap.timeline({
       scrollTrigger: {
         trigger: '#hero',
         start: 'top 85%',
-        toggleActions: 'play reverse play reverse'
+        once: true
+      },
+      onComplete: () => {
+        gsap.set(heroEls, { opacity: 1, clearProps: 'opacity,transform' });
       }
     });
 
@@ -255,7 +259,10 @@ document.addEventListener('DOMContentLoaded', () => {
           scrollTrigger: {
             trigger: '.trust-section',
             start: 'top 85%',
-            toggleActions: 'play reverse play reverse'
+            once: true
+          },
+          onComplete: () => {
+            gsap.set(trustElements, { opacity: 1, clearProps: 'opacity,transform' });
           }
         }
       );
@@ -271,7 +278,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { ...IR, opacity: 0, y: 35 },
         {
           opacity: 1, y: 0, duration: 0.9, ease: 'power4.out',
-          scrollTrigger: { trigger: '#process', start: 'top 80%', toggleActions: 'play reverse play reverse' }
+          scrollTrigger: { trigger: '#process', start: 'top 80%', once: true },
+          onComplete: () => {
+            gsap.set(timelineLeft, { opacity: 1, clearProps: 'opacity,transform' });
+          }
         }
       );
     }
@@ -281,7 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { ...IR, scaleY: 0, transformOrigin: 'top center' },
         {
           scaleY: 1, duration: 1.2, ease: 'power2.inOut',
-          scrollTrigger: { trigger: '.timeline-right', start: 'top 80%', toggleActions: 'play reverse play reverse' }
+          scrollTrigger: { trigger: '.timeline-right', start: 'top 80%', once: true },
+          onComplete: () => {
+            gsap.set(trackLine, { clearProps: 'transform' });
+          }
         }
       );
     }
@@ -316,11 +329,15 @@ document.addEventListener('DOMContentLoaded', () => {
           onEnterBack: () => setActiveStep(step)
         });
 
+        const stepEls = [stepNum, stepTitle, stepDesc].filter(Boolean);
         const stepTl = gsap.timeline({
           scrollTrigger: {
             trigger: step,
             start: 'top 85%',
-            toggleActions: 'play reverse play reverse'
+            once: true
+          },
+          onComplete: () => {
+            if (stepEls.length > 0) gsap.set(stepEls, { opacity: 1, clearProps: 'opacity,transform' });
           }
         });
 
@@ -333,10 +350,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // D. CASE STUDY SECTION REVEAL
     const caseSection = document.getElementById('work');
     if (caseSection) {
+      const caseEls = ['.case-header', '.case-story-nav', '.case-visual-wrapper'];
       const caseTl = gsap.timeline({
-        scrollTrigger: { trigger: caseSection, start: 'top 80%', toggleActions: 'play reverse play reverse' }
+        scrollTrigger: { trigger: caseSection, start: 'top 80%', once: true },
+        onComplete: () => {
+          gsap.set(caseEls, { opacity: 1, clearProps: 'opacity,transform' });
+        }
       });
-      caseTl.fromTo(['.case-header', '.case-story-nav', '.case-visual-wrapper'],
+      caseTl.fromTo(caseEls,
         { ...IR, opacity: 0, y: 35 },
         { opacity: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'expo.out' }
       );
@@ -347,7 +368,10 @@ document.addEventListener('DOMContentLoaded', () => {
           { ...IR, opacity: 0, y: 30 },
           {
             opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: 'power4.out',
-            scrollTrigger: { trigger: '.case-narrative-grid', start: 'top 85%', toggleActions: 'play reverse play reverse' }
+            scrollTrigger: { trigger: '.case-narrative-grid', start: 'top 85%', once: true },
+            onComplete: () => {
+              gsap.set(narrativeCols, { opacity: 1, clearProps: 'opacity,transform' });
+            }
           }
         );
       }
@@ -360,7 +384,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { ...IR, opacity: 0, y: 30 },
         {
           opacity: 1, y: 0, duration: 0.85, ease: 'power4.out',
-          scrollTrigger: { trigger: '.services-section', start: 'top 80%', toggleActions: 'play reverse play reverse' }
+          scrollTrigger: { trigger: '.services-section', start: 'top 80%', once: true },
+          onComplete: () => {
+            gsap.set('.services-header', { opacity: 1, clearProps: 'opacity,transform' });
+          }
         }
       );
 
@@ -371,8 +398,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const tags  = gsap.utils.toArray('.outcome-tag', card);
         const link  = card.querySelector('.service-link');
 
+        const cardEls = [card, idx, title, desc, ...tags, link].filter(Boolean);
         const cardTl = gsap.timeline({
-          scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play reverse play reverse' }
+          scrollTrigger: { trigger: card, start: 'top 88%', once: true },
+          onComplete: () => {
+            if (cardEls.length > 0) gsap.set(cardEls, { opacity: 1, clearProps: 'opacity,transform' });
+          }
         });
 
         cardTl.fromTo(card,  { ...IR, opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' });
@@ -391,7 +422,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { ...IR, opacity: 0, y: 30 },
         {
           opacity: 1, y: 0, duration: 0.85, ease: 'power4.out',
-          scrollTrigger: { trigger: '#philosophy', start: 'top 80%', toggleActions: 'play reverse play reverse' }
+          scrollTrigger: { trigger: '#philosophy', start: 'top 80%', once: true },
+          onComplete: () => {
+            gsap.set('.valprop-header', { opacity: 1, clearProps: 'opacity,transform' });
+          }
         }
       );
 
@@ -403,8 +437,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const underline = pillar.querySelector('.gold-underline');
         const desc      = pillar.querySelector('.pillar-desc');
 
+        const pillarEls = [pillar, divider, num, svg, title, underline, desc].filter(Boolean);
         const pillarTl = gsap.timeline({
-          scrollTrigger: { trigger: pillar, start: 'top 85%', toggleActions: 'play reverse play reverse' }
+          scrollTrigger: { trigger: pillar, start: 'top 85%', once: true },
+          onComplete: () => {
+            if (pillarEls.length > 0) gsap.set(pillarEls, { opacity: 1, clearProps: 'opacity,transform' });
+          }
         });
 
         // 1. Editorial divider grows horizontally
@@ -529,12 +567,16 @@ document.addEventListener('DOMContentLoaded', () => {
         .fromTo('.flint-crack-highlight', { immediateRender: false, strokeDashoffset: 1000 }, { strokeDashoffset: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3')
         .to('.flint-gap-reveal',          { height: 12, duration: 0.35, ease: 'power2.out' }, '-=0.15');
 
+      const ctaEls = ['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.closing-friction', '.flint-spark', '#cta-particle-canvas'];
       gsap.fromTo(
-        ['.cta-anim-eyebrow', '.cta-white-text', '.cta-gold-text', '.cta-anim-subtext', '.closing-friction', '.flint-spark', '#cta-particle-canvas'],
+        ctaEls,
         { opacity: 0, y: 15 },
         {
           opacity: 1, y: 0, duration: 0.85, stagger: 0.08, ease: 'power4.out',
-          scrollTrigger: { trigger: ctaSection, start: 'top 88%', once: true }
+          scrollTrigger: { trigger: ctaSection, start: 'top 88%', once: true },
+          onComplete: () => {
+            gsap.set(ctaEls, { opacity: 1, clearProps: 'opacity,transform' });
+          }
         }
       );
 
@@ -563,11 +605,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // J. FOOTER REVEAL
     const footer = document.querySelector('.main-footer');
     if (footer) {
-      gsap.fromTo(['.footer-brand-statement', '.footer-nav-group'],
+      const footerEls = ['.footer-brand-statement', '.footer-nav-group'];
+      gsap.fromTo(footerEls,
         { ...IR, opacity: 0, y: 20 },
         {
           opacity: 1, y: 0, duration: 0.7, stagger: 0.08, ease: 'power4.out',
-          scrollTrigger: { trigger: footer, start: 'top 90%', toggleActions: 'play reverse play reverse' }
+          scrollTrigger: { trigger: footer, start: 'top 90%', once: true },
+          onComplete: () => {
+            gsap.set(footerEls, { opacity: 1, clearProps: 'opacity,transform' });
+          }
         }
       );
     }
