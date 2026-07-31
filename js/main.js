@@ -155,6 +155,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Smooth scroll delegation for in-page anchor links (Lenis + Native fallback)
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      const href = anchor.getAttribute('href');
+      if (href && href !== '#' && href.length > 1) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          if (lenis) {
+            lenis.scrollTo(target);
+          } else {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }
+    });
+  });
+
   // 3D Parallax Mouse Spring Effect on Hero Browser (Viewport & Idle Optimized)
   const hero = document.getElementById('hero');
   const browser = document.getElementById('parallax-browser');
