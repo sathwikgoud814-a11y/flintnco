@@ -28,6 +28,13 @@
     var wrapper = document.getElementById('scroll-story-section');
     if (!wrapper) return;
 
+    // Clean up any stale ScrollTriggers attached to wrapper
+    ScrollTrigger.getAll().forEach(function (st) {
+      if (st.trigger === wrapper) {
+        st.kill();
+      }
+    });
+
     var scenes = gsap.utils.toArray('.story-scene', wrapper);
     if (scenes.length < 4) return;
 
