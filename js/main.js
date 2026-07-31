@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3D Parallax Mouse Spring Effect on Hero Browser
+  // 3D Parallax Mouse Spring Effect on Hero Browser (Viewport & Idle Optimized)
   const hero = document.getElementById('hero');
   const browser = document.getElementById('parallax-browser');
 
@@ -159,23 +159,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseY = 0;
     let currentX = 0;
     let currentY = 0;
+    let isAnimating = false;
+    let isHeroVisible = true;
+    let heroRafId = null;
 
     const visualGlow = document.querySelector('.visual-glow');
 
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
-      const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-      const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-      mouseX = x * 8;
-      mouseY = y * 8;
-    }, { passive: true });
-
-    hero.addEventListener('mouseleave', () => {
-      mouseX = 0;
-      mouseY = 0;
-    }, { passive: true });
-
     const animateParallax = () => {
+      if (!isHeroVisible) {
+        isAnimating = false;
+        return;
+      }
+
       currentX += (mouseX - currentX) * 0.045;
       currentY += (mouseY - currentY) * 0.045;
       const rotateY = currentX * 0.18;
@@ -184,10 +179,52 @@ document.addEventListener('DOMContentLoaded', () => {
       if (visualGlow) {
         visualGlow.style.transform = `translate(-50%, -50%) translate3d(${currentX * 0.6}px, ${currentY * 0.6}px, 0)`;
       }
-      requestAnimationFrame(animateParallax);
+
+      // Stop RAF when equilibrium is reached and mouse is idle
+      if (Math.abs(mouseX - currentX) < 0.005 && Math.abs(mouseY - currentY) < 0.005 && mouseX === 0 && mouseY === 0) {
+        isAnimating = false;
+        return;
+      }
+
+      heroRafId = requestAnimationFrame(animateParallax);
     };
 
-    animateParallax();
+    const startParallax = () => {
+      if (!isAnimating && isHeroVisible) {
+        isAnimating = true;
+        heroRafId = requestAnimationFrame(animateParallax);
+      }
+    };
+
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+      const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+      mouseX = x * 8;
+      mouseY = y * 8;
+      startParallax();
+    }, { passive: true });
+
+    hero.addEventListener('mouseleave', () => {
+      mouseX = 0;
+      mouseY = 0;
+      startParallax();
+    }, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      const heroObserver = new IntersectionObserver(([entry]) => {
+        isHeroVisible = entry.isIntersecting;
+        if (isHeroVisible) {
+          startParallax();
+        } else {
+          if (heroRafId) cancelAnimationFrame(heroRafId);
+          isAnimating = false;
+        }
+      }, { threshold: 0 });
+      heroObserver.observe(hero);
+    } else {
+      startParallax();
+    }
   }
 
   // -------------------------------------------------------------
@@ -549,7 +586,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    let isCtaCanvasVisible = false;
+    let particleRafId = null;
+
     const drawParticles = () => {
+      if (!isCtaCanvasVisible) return;
       ctx.clearRect(0, 0, width, height);
 
       particles.forEach(p => {
@@ -568,10 +609,22 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fill();
       });
 
-      requestAnimationFrame(drawParticles);
+      particleRafId = requestAnimationFrame(drawParticles);
     };
 
-    drawParticles();
+    if ('IntersectionObserver' in window) {
+      const ctaObs = new IntersectionObserver(([entry]) => {
+        isCtaCanvasVisible = entry.isIntersecting;
+        if (isCtaCanvasVisible) {
+          if (particleRafId) cancelAnimationFrame(particleRafId);
+          particleRafId = requestAnimationFrame(drawParticles);
+        }
+      }, { threshold: 0 });
+      ctaObs.observe(particleCanvas);
+    } else {
+      isCtaCanvasVisible = true;
+      drawParticles();
+    }
   }
 
   // -------------------------------------------------------------
@@ -610,7 +663,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    let isFooterCanvasVisible = false;
+    let footerRafId = null;
+
     const drawFooterEmbers = () => {
+      if (!isFooterCanvasVisible) return;
       fCtx.clearRect(0, 0, fWidth, fHeight);
 
       footerEmbers.forEach(p => {
@@ -629,10 +686,22 @@ document.addEventListener('DOMContentLoaded', () => {
         fCtx.fill();
       });
 
-      requestAnimationFrame(drawFooterEmbers);
+      footerRafId = requestAnimationFrame(drawFooterEmbers);
     };
 
-    drawFooterEmbers();
+    if ('IntersectionObserver' in window) {
+      const footerObs = new IntersectionObserver(([entry]) => {
+        isFooterCanvasVisible = entry.isIntersecting;
+        if (isFooterCanvasVisible) {
+          if (footerRafId) cancelAnimationFrame(footerRafId);
+          footerRafId = requestAnimationFrame(drawFooterEmbers);
+        }
+      }, { threshold: 0 });
+      footerObs.observe(footerCanvas);
+    } else {
+      isFooterCanvasVisible = true;
+      drawFooterEmbers();
+    }
   }
 
   // -------------------------------------------------------------
