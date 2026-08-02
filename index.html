@@ -65,7 +65,7 @@
   </header>
 
   <!-- Mobile Navigation Drawer Overlay -->
-  <div class="mobile-menu-overlay" id="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile Navigation">
+  <aside class="mobile-menu-overlay" id="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile Navigation">
     <nav class="mobile-nav-links">
       <a href="#work" class="mobile-nav-link">Work</a>
       <a href="#process" class="mobile-nav-link">Process</a>
@@ -73,15 +73,13 @@
       <a href="#philosophy" class="mobile-nav-link">Philosophy</a>
       <a href="#faq" class="mobile-nav-link">FAQ</a>
 
-
-
       <a href="#inquire" class="mobile-nav-link mobile-cta">Start Your Project</a>
     </nav>
-  </div>
+  </aside>
 
   <main id="main-content">
     <!-- Full-Screen Hero Section -->
-    <section class="hero-section" id="hero">
+    <section class="hero-section" id="hero" aria-label="Introduction">
       <div class="hero-container">
 
         <!-- Left Side: Editorial Typography & Copy -->
@@ -143,12 +141,12 @@
 
       </div>
 
-
     </section>
 
     <!-- Horizontal Trust Section -->
-    <section class="trust-section">
+    <section class="trust-section" aria-label="Core Value Propositions">
       <div class="trust-container">
+        <h2 class="sr-only">Core Value Propositions</h2>
         <span class="trust-item">Conversion Focused</span>
         <span class="trust-item">Fast Performance</span>
         <span class="trust-item">Mobile Optimized</span>
@@ -158,11 +156,11 @@
     </section>
 
     <!-- Scroll Storytelling Section - 400vh Wrapper with 100vh Sticky Container -->
-    <div class="scroll-story-wrapper" id="scroll-story-section">
+    <section class="scroll-story-wrapper" id="scroll-story-section" aria-label="Editorial Storytelling">
       <div class="story-sticky-stage">
         
         <!-- Scene 1 (0–25%) -->
-        <div class="story-scene active" data-scene="1">
+        <article class="story-scene active" data-scene="1" aria-labelledby="story-scene-1-title">
           <div class="story-illus-col">
             <div class="story-illus-container">
               <img src="SVG1.svg" alt="First Impression Illustration" class="story-illus-img" width="1536" height="1024" loading="lazy" decoding="async" />
@@ -171,14 +169,14 @@
           <div class="story-text-col">
             <div class="story-text-block">
               <span class="story-eyebrow">01 / First Impression</span>
-              <h2 class="story-heading">You have five<br><em>seconds.</em></h2>
+              <h2 class="story-heading" id="story-scene-1-title">You have five<br><em>seconds.</em></h2>
               <p class="story-body">The moment a visitor lands on your site, they're already forming a verdict. A professional, clear design signals that you take your work seriously. Everything else says think twice.</p>
             </div>
           </div>
-        </div>
+        </article>
 
         <!-- Scene 2 (25–50%) -->
-        <div class="story-scene" data-scene="2">
+        <article class="story-scene" data-scene="2" aria-labelledby="story-scene-2-title">
           <div class="story-illus-col">
             <div class="story-illus-container">
               <img src="SVG2.svg" alt="Clarity Illustration" class="story-illus-img" width="1536" height="1024" loading="lazy" decoding="async" />
@@ -187,14 +185,14 @@
           <div class="story-text-col">
             <div class="story-text-block">
               <span class="story-eyebrow">02 / Clarity</span>
-              <h2 class="story-heading">Confusion sends<br><em>them away.</em></h2>
+              <h2 class="story-heading" id="story-scene-2-title">Confusion sends<br><em>them away.</em></h2>
               <p class="story-body">If visitors can't figure out what you do and how to take the next step within those five seconds, they don't ask for help &mdash; they leave. Then they call the competitor whose site made it easy.</p>
             </div>
           </div>
-        </div>
+        </article>
 
         <!-- Scene 3 (50–75%) -->
-        <div class="story-scene" data-scene="3">
+        <article class="story-scene" data-scene="3" aria-labelledby="story-scene-3-title">
           <div class="story-illus-col">
             <div class="story-illus-container">
               <img src="SVG3.svg" alt="Trust Illustration" class="story-illus-img" width="1536" height="1024" loading="lazy" decoding="async" />
@@ -203,14 +201,14 @@
           <div class="story-text-col">
             <div class="story-text-block">
               <span class="story-eyebrow">03 / Trust</span>
-              <h2 class="story-heading">Trust drives<br><em>the call.</em></h2>
+              <h2 class="story-heading" id="story-scene-3-title">Trust drives<br><em>the call.</em></h2>
               <p class="story-body">People don't call businesses they me unsure about. A well-built website creates trust before the first conversation &mdash; so by the time someone reaches out, they're already confident you're the right choice.</p>
             </div>
           </div>
-        </div>
+        </article>
 
         <!-- Scene 4 (75–100%) -->
-        <div class="story-scene" data-scene="4">
+        <article class="story-scene" data-scene="4" aria-labelledby="story-scene-4-title">
           <div class="story-illus-col">
             <div class="story-illus-container">
               <img src="SVG4.svg" alt="The Opportunity Illustration" class="story-illus-img" width="1536" height="1024" loading="lazy" decoding="async" />
@@ -219,22 +217,22 @@
           <div class="story-text-col">
             <div class="story-text-block">
               <span class="story-eyebrow">04 / The Opportunity</span>
-              <h2 class="story-heading">These are<br><em>fixable problems.</em></h2>
+              <h2 class="story-heading" id="story-scene-4-title">These are<br><em>fixable problems.</em></h2>
               <p class="story-body">The gap between a website that loses customers and one that earns them is smaller than most business owners think. It comes down to clarity, structure, and one obvious next step. That's exactly what we build.</p>
             </div>
           </div>
-        </div>
+        </article>
 
       </div>
-    </div>
+    </section>
     <!-- Strategic Process Timeline (The Flint Method) -->
-    <section class="timeline-section" id="process">
+    <section class="timeline-section" id="process" aria-labelledby="timeline-main-heading">
       <div class="timeline-container">
 
         <!-- Left Side: Sticky Information -->
         <div class="timeline-left reveal">
           <span class="timeline-tag">Methodology</span>
-          <h2 class="timeline-heading">How we build websites that actually work.</h2>
+          <h2 class="timeline-heading" id="timeline-main-heading">How we build websites that actually work.</h2>
           <p class="timeline-intro">
             We learn how your customers make decisions before we design anything. Then we build a website around that
             &mdash; not around what looks trendy.
@@ -247,14 +245,14 @@
           <div class="timeline-track-line"></div>
 
           <!-- Step 1 -->
-          <div class="timeline-step reveal">
+          <article class="timeline-step reveal">
             <div class="step-marker">
               <div class="step-dot"></div>
             </div>
             <div class="step-content">
               <div class="step-meta">
                 <svg class="step-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
-                  stroke-linecap="round" stroke-linejoin="round">
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="2" x2="12" y2="6" />
                   <line x1="12" y1="18" x2="12" y2="22" />
@@ -272,17 +270,17 @@
                 We learn your business, customers, and competitive advantage before designing a single screen.
               </p>
             </div>
-          </div>
+          </article>
 
           <!-- Step 2 -->
-          <div class="timeline-step reveal">
+          <article class="timeline-step reveal">
             <div class="step-marker">
               <div class="step-dot"></div>
             </div>
             <div class="step-content">
               <div class="step-meta">
                 <svg class="step-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
-                  stroke-linecap="round" stroke-linejoin="round">
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
                   <line x1="4" y1="22" x2="4" y2="15" />
                 </svg>
@@ -293,17 +291,17 @@
                 We identify exactly where trust and conversions are being lost.
               </p>
             </div>
-          </div>
+          </article>
 
           <!-- Step 3 -->
-          <div class="timeline-step reveal">
+          <article class="timeline-step reveal">
             <div class="step-marker">
               <div class="step-dot"></div>
             </div>
             <div class="step-content">
               <div class="step-meta">
                 <svg class="step-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
-                  stroke-linecap="round" stroke-linejoin="round">
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="10" />
                   <circle cx="12" cy="12" r="4" />
                   <line x1="12" y1="2" x2="12" y2="4" />
@@ -318,17 +316,17 @@
                 We build a fast, focused website with one purpose: generating enquiries.
               </p>
             </div>
-          </div>
+          </article>
 
           <!-- Step 4 -->
-          <div class="timeline-step reveal">
+          <article class="timeline-step reveal">
             <div class="step-marker">
               <div class="step-dot"></div>
             </div>
             <div class="step-content">
               <div class="step-meta">
                 <svg class="step-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
-                  stroke-linecap="round" stroke-linejoin="round">
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <polyline points="16 18 22 12 16 6" />
                   <polyline points="8 6 2 12 8 18" />
                 </svg>
@@ -339,17 +337,17 @@
                 We handle launch, hosting, optimisation, and testing.
               </p>
             </div>
-          </div>
+          </article>
 
           <!-- Step 5 -->
-          <div class="timeline-step reveal">
+          <article class="timeline-step reveal">
             <div class="step-marker">
               <div class="step-dot"></div>
             </div>
             <div class="step-content">
               <div class="step-meta">
                 <svg class="step-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
-                  stroke-linecap="round" stroke-linejoin="round">
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M23 6l-9.5 9.5-5-5L1 18" />
                   <polyline points="17 6 23 6 23 12" />
                 </svg>
@@ -360,26 +358,26 @@
                 We measure, refine, and improve as your business grows.
               </p>
             </div>
-          </div>
+          </article>
 
         </div>
+      </div>
     </section>
 
-
     <!-- Premium Case Study Section (Aether Group) -->
-    <section class="case-study-section" id="work">
+    <section class="case-study-section" id="work" aria-labelledby="case-main-heading">
       <div class="case-study-container">
 
         <!-- Case Header -->
         <div class="case-header reveal">
           <span class="case-tag">Featured Study / Aether Group</span>
-          <h2 class="case-heading">Re-engineering authority for a sovereign wealth advisory.</h2>
+          <h2 class="case-heading" id="case-main-heading">Re-engineering authority for a sovereign wealth advisory.</h2>
           <p class="case-summary">How we turned a highly specialized private wealth website into their primary business
             development channel.</p>
         </div>
 
         <!-- 4-Stage Visual Storyteller Selector -->
-        <div class="case-story-nav reveal">
+        <div class="case-story-nav reveal" role="toolbar" aria-label="Case Study Stages">
           <button class="case-story-btn active" data-stage="problem">
             <span class="cs-num">I</span>
             <span class="cs-label">Problem</span>
@@ -423,7 +421,7 @@
               <div class="mock-grid-split">
                 <div class="mock-split-left">
                   <span class="mock-sub-tag">ESTABLISHED 2012</span>
-                  <h1 class="mock-title-text">Sovereign Wealth<br><em>Advisory</em> Group.</h1>
+                  <h3 class="mock-title-text">Sovereign Wealth<br><em>Advisory</em> Group.</h3>
                   <p class="mock-body-copy">We guide generational family offices, foundations, and institutional capital
                     through volatile market cycles with total discretion and analytical rigor.</p>
                   <div class="mock-btn-cta">Request Mandate Briefing &rarr;</div>
@@ -446,82 +444,83 @@
 
         <!-- Chronological Narrative Breakdown Grid -->
         <div class="case-breakdown-grid reveal">
-          <div class="breakdown-col">
+          <article class="breakdown-col">
             <span class="col-number">I. / Problem</span>
             <h3 class="col-heading">Generic tech positioning</h3>
             <p class="col-description">
               The original site looked like a standard SaaS template. High-net-worth individuals and partners couldn't
               establish institutional credibility, leading to immediate exits.
             </p>
-          </div>
-          <div class="breakdown-col">
+          </article>
+          <article class="breakdown-col">
             <span class="col-number">II. / Strategy</span>
             <h3 class="col-heading">Severe minimal authority</h3>
             <p class="col-description">
               Rebuilt using editorial layouts, disciplined spacing, and stronger trust signals.
             </p>
-          </div>
-          <div class="breakdown-col">
+          </article>
+          <article class="breakdown-col">
             <span class="col-number">III. / Decisions</span>
             <h3 class="col-heading">Whitespace as luxury</h3>
             <p class="col-description">
               Editorial typography, generous whitespace, and a single focused CTA established authority immediately.
             </p>
-          </div>
-          <div class="breakdown-col">
+          </article>
+          <article class="breakdown-col">
             <span class="col-number">IV. / Outcome</span>
             <h3 class="col-heading">Immediate trust alignment</h3>
             <p class="col-description">
               A digital interface that feels like a private vault. Prospect inquiries surged, site visit duration
               doubled, and trust barriers vanished before introductory calls.
             </p>
-          </div>
+          </article>
         </div>
 
         <!-- Before / After Narrative -->
         <div class="case-narrative-grid reveal">
-          <div class="narrative-col">
+          <article class="narrative-col">
             <span class="narrative-num">Before</span>
             <h4 class="narrative-label">What we found</h4>
             <p class="narrative-text">A standard template site. No visual hierarchy. Prospective clients couldn't
               establish credibility within the first 10 seconds of landing.</p>
-          </div>
-          <div class="narrative-col">
+          </article>
+          <article class="narrative-col">
             <span class="narrative-num">What Changed</span>
             <h4 class="narrative-label">What we built</h4>
             <p class="narrative-text">Rebuilt from scratch with editorial layout, clear authority signals, and a single
               focused call to action above the fold.</p>
-          </div>
-          <div class="narrative-col">
+          </article>
+          <article class="narrative-col">
             <span class="narrative-num">After</span>
             <h4 class="narrative-label">What happened</h4>
             <p class="narrative-text">The site now functions as a primary business development channel. Inbound enquiry
               quality improved significantly within weeks of launch.</p>
-          </div>
-          <div class="narrative-col">
+          </article>
+          <article class="narrative-col">
             <span class="narrative-num">Why It Mattered</span>
             <h4 class="narrative-label">The real result</h4>
             <p class="narrative-text">Clients could immediately understand what Aether does and feel confident reaching
               out &mdash; instead of second-guessing the firm's credibility.</p>
-          </div>
+          </article>
         </div>
 
+      </div>
     </section>
 
     <!-- Services Section -->
-    <section class="services-section" id="services">
+    <section class="services-section" id="services" aria-labelledby="services-main-heading">
       <div class="services-container">
 
         <!-- Services Header -->
         <div class="services-header reveal">
           <span class="services-tag">02 / Offerings</span>
-          <h2 class="services-heading">Three ways we can help your business get more customers online.</h2>
+          <h2 class="services-heading" id="services-main-heading">Three ways we can help your business get more customers online.</h2>
         </div>
 
         <!-- Services Cards Grid -->
         <div class="services-grid">
           <!-- Card 1 -->
-          <div class="service-card reveal">
+          <article class="service-card reveal">
             <span class="service-index">Service 01 / Starting Fresh</span>
             <h3 class="service-title">New Business Website</h3>
             <p class="service-desc">
@@ -533,10 +532,10 @@
               <span class="outcome-tag">Mobile First</span>
             </div>
             <a href="#inquire" class="service-link">Enquire <span class="service-arrow">&rarr;</span></a>
-          </div>
+          </article>
 
           <!-- Card 2 -->
-          <div class="service-card reveal">
+          <article class="service-card reveal">
             <span class="service-index">Service 02 / Existing Business</span>
             <h3 class="service-title">Website Redesign</h3>
             <p class="service-desc">
@@ -549,10 +548,10 @@
               <span class="outcome-tag">Faster Load</span>
             </div>
             <a href="#inquire" class="service-link">Enquire <span class="service-arrow">&rarr;</span></a>
-          </div>
+          </article>
 
           <!-- Card 3 -->
-          <div class="service-card reveal">
+          <article class="service-card reveal">
             <span class="service-index">Service 03 / Long-Term Partner</span>
             <h3 class="service-title">Ongoing Improvements</h3>
             <p class="service-desc">
@@ -564,19 +563,20 @@
               <span class="outcome-tag">Priority Support</span>
             </div>
             <a href="#inquire" class="service-link">Enquire <span class="service-arrow">&rarr;</span></a>
-          </div>
+          </article>
         </div>
 
+      </div>
     </section>
 
     <!-- Premium Philosophy Section -->
-    <section class="philosophy-section" id="philosophy">
+    <section class="philosophy-section" id="philosophy" aria-labelledby="philosophy-main-heading">
       <div class="philosophy-container">
 
         <!-- Section Header -->
         <div class="philosophy-header reveal">
           <span class="philosophy-tag">03 / Philosophy</span>
-          <h2 class="philosophy-heading">We don't build generic websites. We engineer digital assets.</h2>
+          <h2 class="philosophy-heading" id="philosophy-main-heading">We don't build generic websites. We engineer digital assets.</h2>
         </div>
 
         <!-- Staggered Asymmetric Rows -->
@@ -585,11 +585,11 @@
           <!-- Row 1: Strategy & Purpose -->
           <div class="philosophy-row row-odd">
             <!-- Pillar 1 (Left - Wide) -->
-            <div class="pillar-block pillar-wide reveal">
+            <article class="pillar-block pillar-wide reveal">
               <div class="pillar-divider"></div>
               <div class="pillar-header">
                 <span class="pillar-num">I. Strategy First</span>
-                <svg class="pillar-svg" viewBox="0 0 100 20" fill="none">
+                <svg class="pillar-svg" viewBox="0 0 100 20" fill="none" aria-hidden="true">
                   <line x1="0" y1="10" x2="100" y2="10" stroke="currentColor" stroke-width="0.8" />
                   <line x1="0" y1="5" x2="0" y2="15" stroke="currentColor" stroke-width="0.8" />
                   <line x1="50" y1="5" x2="50" y2="15" stroke="currentColor" stroke-width="0.8" />
@@ -601,14 +601,14 @@
               <p class="pillar-desc">
                 Strategy determines every design decision. Nothing exists without purpose.
               </p>
-            </div>
+            </article>
 
             <!-- Pillar 2 (Right - Narrow) -->
-            <div class="pillar-block pillar-narrow reveal">
+            <article class="pillar-block pillar-narrow reveal">
               <div class="pillar-divider"></div>
               <div class="pillar-header">
                 <span class="pillar-num">II. Precision</span>
-                <svg class="pillar-svg" viewBox="0 0 40 40" fill="none">
+                <svg class="pillar-svg" viewBox="0 0 40 40" fill="none" aria-hidden="true">
                   <path d="M5,5 L35,5 L35,35" stroke="currentColor" stroke-width="0.8" />
                   <path d="M12,12 L28,12 L28,28" stroke="currentColor" stroke-width="0.8" />
                   <circle cx="35" cy="5" r="1.5" fill="currentColor" />
@@ -620,17 +620,17 @@
               <p class="pillar-desc">
                 Every pixel earns its place.
               </p>
-            </div>
+            </article>
           </div>
 
           <!-- Row 2: Customer & Scaling -->
           <div class="philosophy-row row-even">
             <!-- Pillar 3 (Left - Narrow) -->
-            <div class="pillar-block pillar-narrow reveal">
+            <article class="pillar-block pillar-narrow reveal">
               <div class="pillar-divider"></div>
               <div class="pillar-header">
                 <span class="pillar-num">III. Alignment</span>
-                <svg class="pillar-svg" viewBox="0 0 50 50" fill="none">
+                <svg class="pillar-svg" viewBox="0 0 50 50" fill="none" aria-hidden="true">
                   <circle cx="10" cy="10" r="2" fill="currentColor" />
                   <circle cx="40" cy="40" r="2" fill="currentColor" />
                   <path d="M10,10 L25,10 L25,40 L40,40" stroke="currentColor" stroke-width="0.8"
@@ -642,14 +642,14 @@
               <p class="pillar-desc">
                 Built around how customers think, not how designers decorate.
               </p>
-            </div>
+            </article>
 
             <!-- Pillar 4 (Right - Wide) -->
-            <div class="pillar-block pillar-wide reveal">
+            <article class="pillar-block pillar-wide reveal">
               <div class="pillar-divider"></div>
               <div class="pillar-header">
                 <span class="pillar-num">IV. Scalability</span>
-                <svg class="pillar-svg" viewBox="0 0 100 45" fill="none">
+                <svg class="pillar-svg" viewBox="0 0 100 45" fill="none" aria-hidden="true">
                   <path d="M5,40 L35,30 L65,15 L95,5" stroke="currentColor" stroke-width="0.8" />
                   <circle cx="95" cy="5" r="2.5" fill="var(--accent)" />
                   <line x1="5" y1="40" x2="95" y2="40" stroke="currentColor" stroke-width="0.5"
@@ -663,20 +663,21 @@
               <p class="pillar-desc">
                 Structured to scale with your business, not against it.
               </p>
-            </div>
+            </article>
           </div>
 
         </div>
 
+      </div>
     </section>
 
     <!-- Work Showcase Section -->
-    <section class="testimonials-section" id="testimonials">
+    <section class="testimonials-section" id="testimonials" aria-labelledby="testimonials-main-heading">
       <div class="testimonials-container">
 
         <div class="testimonials-header reveal">
           <span class="testimonials-tag">04 / Our Work</span>
-          <h2 class="testimonials-heading">What a difference the right website makes.</h2>
+          <h2 class="testimonials-heading" id="testimonials-main-heading">What a difference the right website makes.</h2>
         </div>
 
         <!-- Before / After Browser Mockup Showcase -->
@@ -728,7 +729,7 @@
             <p class="ba-caption">No hierarchy. No clear message. Visitors don't know what to do next.</p>
           </div>
 
-          <div class="ba-divider-arrow">&rarr;</div>
+          <div class="ba-divider-arrow" aria-hidden="true">&rarr;</div>
 
           <!-- AFTER -->
           <div class="ba-panel">
@@ -771,16 +772,17 @@
         <p class="ba-nda-note reveal">Project screenshots are shared under NDA. Get in touch to see work relevant to
           your industry.</p>
 
+      </div>
     </section>
 
     <!-- Premium FAQ Accordion Section -->
-    <section class="faq-section" id="faq">
+    <section class="faq-section" id="faq" aria-labelledby="faq-main-heading">
       <div class="faq-container">
 
         <!-- Left Side: Sticky Information -->
         <div class="faq-left reveal">
           <span class="faq-tag">05 / Details</span>
-          <h2 class="faq-heading">Frequently Asked Questions</h2>
+          <h2 class="faq-heading" id="faq-main-heading">Frequently Asked Questions</h2>
           <p class="faq-intro">
             Plain answers to common questions. If there's something else on your mind, just reach out.
           </p>
@@ -871,16 +873,17 @@
 
         </div>
 
+      </div>
     </section>
 
     <!-- Physical Forged Dark CTA Surface & Particle Canvas -->
-    <section class="cta-section" id="inquire">
+    <section class="cta-section" id="inquire" aria-labelledby="cta-main-heading">
       <!-- Subtle Moving Film Grain Overlay -->
       <div class="cta-grain-overlay"></div>
 
       <!-- "Forged Flint" Natural Fracture Transition -->
       <div class="flint-fracture-wrapper" id="flint-fracture">
-        <svg class="flint-fracture-svg" viewBox="0 0 1000 40" preserveAspectRatio="none">
+        <svg class="flint-fracture-svg" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true">
           <path class="flint-crack-base" d="M 80 20 Q 180 23, 280 17 T 480 22 T 680 18 T 880 21 L 920 20" fill="none"
             stroke="#2A2A2A" stroke-width="1.5" stroke-linecap="round" />
           <path class="flint-crack-highlight" d="M 220 19 Q 350 22, 480 18 T 650 22" fill="none" stroke="#D4AF37"
@@ -904,7 +907,7 @@
         <!-- Central Typography Header (Vertical Flex Container) -->
         <div class="cta-content">
           <span class="cta-eyebrow cta-anim-eyebrow">READY TO START</span>
-          <h2 class="cta-headline">
+          <h2 class="cta-headline" id="cta-main-heading">
             <span class="cta-white-text">Ready to build something</span><br>
             <em class="cta-gold-text">worth remembering?</em>
           </h2>
@@ -918,60 +921,64 @@
           <p class="cta-friction">Discovery call &nbsp;&middot;&nbsp; 30 minutes &nbsp;&middot;&nbsp; No obligation</p>
         </div>
       </div>
-
-      </div>
     </section>
+  </main>
 
-    <!-- Standalone Premium Footer (Extension of the Forge) -->
-    <footer class="main-footer">
-      <canvas id="footer-embers-canvas" class="footer-embers-canvas" aria-hidden="true"></canvas>
-      <div class="footer-container">
+  <!-- Standalone Premium Footer (Extension of the Forge) -->
+  <footer class="main-footer">
+    <canvas id="footer-embers-canvas" class="footer-embers-canvas" aria-hidden="true"></canvas>
+    <div class="footer-container">
 
-        <!-- Left Column: Branding and Statement -->
-        <div class="footer-brand-column">
-          <h3 class="footer-brand-logo">FLINT CO.</h3>
-          <p class="footer-brand-statement">
-            We build websites that help local businesses get more customers. No jargon. No templates. Just a site that
-            works.
-          </p>
-          <span class="footer-copyright-desktop">&copy; 2026 Flint Co. All rights reserved.</span>
-        </div>
+      <!-- Left Column: Branding and Statement -->
+      <div class="footer-brand-column">
+        <h3 class="footer-brand-logo">FLINT CO.</h3>
+        <p class="footer-brand-statement">
+          We build websites that help local businesses get more customers. No jargon. No templates. Just a site that
+          works.
+        </p>
+        <span class="footer-copyright-desktop">&copy; 2026 Flint Co. All rights reserved.</span>
+      </div>
 
-        <!-- Right Column: Navigation Grids -->
-        <div class="footer-nav-column">
+      <!-- Right Column: Navigation Grids -->
+      <div class="footer-nav-column">
 
-          <!-- Column 1: Navigation -->
-          <div class="footer-nav-group">
-            <h4 class="footer-group-title">Navigation</h4>
+        <!-- Column 1: Navigation -->
+        <div class="footer-nav-group">
+          <h4 class="footer-group-title">Navigation</h4>
+          <nav aria-label="Footer Navigation">
             <a href="#work" class="footer-nav-link">Work</a>
             <a href="#process" class="footer-nav-link">Process</a>
             <a href="#services" class="footer-nav-link">Services</a>
             <a href="#philosophy" class="footer-nav-link">Philosophy</a>
             <a href="#faq" class="footer-nav-link">FAQ</a>
-          </div>
+          </nav>
+        </div>
 
-          <!-- Column 2: Services -->
-          <div class="footer-nav-group">
-            <h4 class="footer-group-title">Services</h4>
+        <!-- Column 2: Services -->
+        <div class="footer-nav-group">
+          <h4 class="footer-group-title">Services</h4>
+          <nav aria-label="Footer Services Navigation">
             <a href="#services" class="footer-nav-link">New Business Website</a>
             <a href="#services" class="footer-nav-link">Website Redesign</a>
             <a href="#services" class="footer-nav-link">Ongoing Improvements</a>
-          </div>
+          </nav>
+        </div>
 
-          <!-- Column 3: Contact & Socials -->
-          <div class="footer-nav-group">
-            <h4 class="footer-group-title">Connect</h4>
+        <!-- Column 3: Contact & Socials -->
+        <div class="footer-nav-group">
+          <h4 class="footer-group-title">Connect</h4>
+          <nav aria-label="Footer Social Navigation">
             <a href="mailto:hello@flintco.studio?subject=Project Inquiry" class="footer-nav-link">Email</a>
             <a href="https://www.linkedin.com" target="_blank" rel="noopener"
               class="footer-nav-link">LinkedIn</a>
-          </div>
-
+          </nav>
         </div>
 
-        <span class="footer-copyright-mobile">&copy; 2026 Flint Co. All rights reserved.</span>
       </div>
-    </footer>
-  </main>
+
+      <span class="footer-copyright-mobile">&copy; 2026 Flint Co. All rights reserved.</span>
+    </div>
+  </footer>
 
   <!-- Local Script -->
   <!-- GSAP Animation Engine (CDN) -->
