@@ -25,12 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const IR = { immediateRender: false };
 
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
   // -------------------------------------------------------------
-  // 1. Lenis Smooth Scroll Engine + GSAP Ticker Synchronization
+  // 1. Lenis Smooth Scroll Engine + GSAP Ticker Synchronization (Desktop Only)
   // -------------------------------------------------------------
   let lenis = null;
 
-  if (!prefersReducedMotion) {
+  if (!prefersReducedMotion && !isMobile) {
     lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -45,13 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger);
 
-      // Drive Lenis ONLY through GSAP ticker — no separate RAF loop
       gsap.ticker.add((time) => {
         lenis.raf(time * 1000);
       });
       gsap.ticker.lagSmoothing(0);
 
-      // Keep ScrollTrigger in sync with Lenis scroll position
       lenis.on('scroll', ScrollTrigger.update);
     }
   }
@@ -62,11 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const header = document.getElementById('header');
   const ctaSection = document.getElementById('inquire');
   
+  let ticking = false;
   const handleScroll = () => {
-    if (window.scrollY > 30) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        if (window.scrollY > 30) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+        ticking = false;
+      });
+      ticking = true;
     }
   };
   

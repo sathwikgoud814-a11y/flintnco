@@ -1,27 +1,11 @@
+import { batchReveal } from './helpers.js';
+
 /**
- * Services Section Motion Engine
- *
- * Requirements:
- * Each service card:
- * • opacity 0 → 1
- * • y 40 → 0
- * • stagger 0.15s
- *
- * On hover:
- * • lift 8px
- * • soft shadow
- * • icon rotates 8 degrees
- * • CTA underline expands
- *
- * Do not use ScrollTrigger scrub.
- * Only reveal once.
- * Export initServices().
+ * Services Section Motion Engine (Optimized GSAP Architecture)
  */
 export function initServices() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return null;
-
-  gsap.registerPlugin(ScrollTrigger);
+  if (typeof gsap === 'undefined') return null;
 
   const servicesSection = document.querySelector('#services, .services-section');
   if (!servicesSection) return null;
@@ -30,54 +14,26 @@ export function initServices() {
   const cardsGrid = servicesSection.querySelector('.services-grid');
   const cards = gsap.utils.toArray('.service-card', servicesSection);
 
-  // 1. Header Reveal
-  if (header && !prefersReducedMotion) {
-    gsap.fromTo(
-      header,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.85,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: header,
-          start: 'top 80%',
-          once: true
-        }
-      }
-    );
+  // 1. Batched Header Reveal
+  if (header) {
+    batchReveal([header], { y: 30, duration: 0.85, start: 'top 80%' });
   }
 
-  // 2. Service Cards Reveal (opacity 0 -> 1, y 40 -> 0, stagger 0.15s, no scrub, reveal once)
+  // 2. Batched Service Cards Reveal (opacity 0 -> 1, y 40 -> 0, stagger 0.15s)
   if (cards.length > 0) {
-    if (!prefersReducedMotion) {
-      gsap.fromTo(
-        cards,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: cardsGrid || cards[0],
-            start: 'top 80%',
-            once: true
-          }
-        }
-      );
-    } else {
-      gsap.set(cards, { opacity: 1, y: 0 });
-    }
+    batchReveal(cards, {
+      y: 40,
+      duration: 0.9,
+      stagger: 0.15,
+      start: 'top 80%',
+      trigger: cardsGrid || cards[0]
+    });
 
     // 3. Hover Micro-Interactions
     cards.forEach((card) => {
       const icon = card.querySelector('.service-arrow, svg, [class*="icon"]');
       const ctaLink = card.querySelector('.service-link');
 
-      // Create CTA underline span if missing
       let underline = ctaLink ? ctaLink.querySelector('.service-cta-underline') : null;
       if (ctaLink && !underline) {
         underline = document.createElement('span');
@@ -103,7 +59,6 @@ export function initServices() {
       card.addEventListener('mouseenter', () => {
         if (prefersReducedMotion) return;
 
-        // Lift 8px & soft shadow
         gsap.to(card, {
           y: -8,
           boxShadow: '0 18px 44px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(212, 175, 55, 0.1)',
@@ -112,7 +67,6 @@ export function initServices() {
           ease: 'power2.out'
         });
 
-        // Icon rotates 8 degrees
         if (icon) {
           gsap.to(icon, {
             rotation: 8,
@@ -122,7 +76,6 @@ export function initServices() {
           });
         }
 
-        // CTA underline expands
         if (underline) {
           gsap.to(underline, {
             scaleX: 1,
@@ -136,7 +89,6 @@ export function initServices() {
       card.addEventListener('mouseleave', () => {
         if (prefersReducedMotion) return;
 
-        // Reset lift & shadow
         gsap.to(card, {
           y: 0,
           boxShadow: '0 0 0 rgba(0, 0, 0, 0)',
@@ -145,7 +97,6 @@ export function initServices() {
           ease: 'power2.out'
         });
 
-        // Reset icon rotation
         if (icon) {
           gsap.to(icon, {
             rotation: 0,
@@ -155,7 +106,6 @@ export function initServices() {
           });
         }
 
-        // Reset CTA underline
         if (underline) {
           gsap.to(underline, {
             scaleX: 0,
