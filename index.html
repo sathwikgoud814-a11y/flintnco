@@ -29,6 +29,92 @@
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
+  <!-- JSON-LD Structured Data Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://flintco.studio/#organization",
+        "name": "Flint Co.",
+        "url": "https://flintco.studio/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://flintco.studio/favicon.svg"
+        },
+        "email": "hello@flintco.studio",
+        "description": "Flint Co. builds websites that help businesses get more customers through clarity, high-performance engineering, and trust-driven design."
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://flintco.studio/#localbusiness",
+        "name": "Flint Co. Studio",
+        "url": "https://flintco.studio/",
+        "image": "https://flintco.studio/assets/case_aether.jpg",
+        "email": "hello@flintco.studio",
+        "priceRange": "$$$",
+        "description": "Professional web design and development agency specializing in high-converting websites, digital asset engineering, and website redesigns.",
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Web Design & Development Services",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "New Business Website",
+                "description": "High-converting websites for businesses launching a new brand or replacing an outdated website."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Website Redesign",
+                "description": "Complete redesign built around how prospective customers make decisions to maximize inquiries."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Ongoing Improvements",
+                "description": "Continuous monthly testing, performance optimization, and brand system refinements."
+              }
+            }
+          ]
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://flintco.studio/#website",
+        "url": "https://flintco.studio/",
+        "name": "Flint Co.",
+        "description": "Websites That Get You More Customers",
+        "publisher": {
+          "@id": "https://flintco.studio/#organization"
+        },
+        "inLanguage": "en"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://flintco.studio/#webpage",
+        "url": "https://flintco.studio/",
+        "name": "Flint Co. | Websites That Get You More Customers",
+        "isPartOf": {
+          "@id": "https://flintco.studio/#website"
+        },
+        "about": {
+          "@id": "https://flintco.studio/#organization"
+        },
+        "description": "Flint Co. builds websites that help local businesses get more customers. Clear, fast, and built to earn trust from the first visit.",
+        "inLanguage": "en"
+      }
+    ]
+  }
+  </script>
+
   <!-- Preconnect & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
