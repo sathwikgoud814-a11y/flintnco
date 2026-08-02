@@ -10,11 +10,18 @@
  */
 
 export function initFlintCursor() {
-  // 1. Accessibility & Device Environment Guard
+  // 1. Accessibility & Device Environment Guard (Disable entirely on touch devices)
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(pointer: coarse)').matches;
 
-  if (prefersReducedMotion || !isFinePointer || typeof gsap === 'undefined') {
+  if (prefersReducedMotion || !isFinePointer || isTouchDevice || typeof gsap === 'undefined') {
+    document.documentElement.classList.remove('has-custom-cursor');
+    document.body.classList.remove('has-custom-cursor');
+    const existing = document.getElementById('flint-cursor');
+    if (existing && existing.parentNode) {
+      existing.parentNode.removeChild(existing);
+    }
     return null;
   }
 
