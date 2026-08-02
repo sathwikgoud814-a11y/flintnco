@@ -165,6 +165,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lenis) lenis.start();
       });
     });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+        mobileToggle.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (lenis) lenis.start();
+        mobileToggle.focus();
+      }
+    });
   }
 
   // Smooth scroll delegation for in-page anchor links (Lenis + Native fallback)

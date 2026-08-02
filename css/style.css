@@ -44,11 +44,38 @@
   color: #F8F6F2;
 }
 
-/* 2. Accessible Focus States */
+/* 2. Accessible Luxury Focus States */
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+  outline: 2px solid #D4AF37;
+  outline-offset: 3px;
   border-radius: 3px;
+  transition: outline-offset 0.2s ease, outline-color 0.2s ease;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.cta-button:focus-visible,
+.mobile-cta:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25);
+}
+
+.nav-link:focus-visible,
+.mobile-nav-link:focus-visible,
+.footer-nav-link:focus-visible,
+.logo:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.case-story-btn:focus-visible,
+.faq-question:focus-visible,
+.mobile-menu-btn:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 /* Skip to Main Content Link */
@@ -69,8 +96,12 @@
   transition: top 0.25s ease;
 }
 
-.skip-link:focus {
+.skip-link:focus,
+.skip-link:focus-visible {
   top: 1rem;
+  outline: 2px solid #D4AF37;
+  outline-offset: 3px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* 3. Global Interactive Link & Button Timing Consistency */
