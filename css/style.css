@@ -447,13 +447,14 @@ body::before {
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  width: 20px;
-  height: 12px;
+  width: 44px;
+  height: 44px;
+  padding: 16px 12px;
+  box-sizing: border-box;
   background: none;
   border: none;
   cursor: pointer;
   z-index: 1001;
-  padding: 0;
 }
 
 .mobile-menu-btn .bar {
@@ -1512,6 +1513,8 @@ body::before {
   align-items: center;
   gap: 0.6rem;
   padding: 0.65rem 1.4rem;
+  min-height: 44px;
+  box-sizing: border-box;
   background: var(--surface);
   border: 1px solid var(--border-color);
   border-radius: 100px;
