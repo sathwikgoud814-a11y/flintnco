@@ -1,6 +1,5 @@
 import Lenis from 'lenis';
 import SplitType from 'split-type';
-import './scroll-story.js';
 import '../animations/index.js';
 import { initFlintCursor } from './cursor.js';
 

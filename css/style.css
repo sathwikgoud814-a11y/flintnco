@@ -877,25 +877,64 @@ body::before {
 }
 
 @media (max-width: 860px) {
-  .story-scene {
-    flex-direction: column;
-    justify-content: center;
-    gap: 2rem;
-    padding: 3rem 1.5rem;
-    text-align: center;
+  .scroll-story-wrapper {
+    height: auto !important;
+    padding: 4.5rem 0 !important;
   }
+
+  .story-sticky-stage {
+    position: relative !important;
+    top: auto !important;
+    height: auto !important;
+    padding: 0 var(--container-padding, 1.5rem) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5rem !important;
+    overflow: visible !important;
+  }
+
+  .story-scene {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 2rem !important;
+    padding: 0 !important;
+    text-align: center !important;
+  }
+
   .story-illus-col,
   .story-text-col {
-    flex: 1 1 100%;
-    max-width: 100%;
-    align-items: center;
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    align-items: center !important;
   }
+
+  .story-illus-container {
+    max-width: 480px !important;
+    margin: 0 auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
   .story-text-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
   }
 }
+
 
 @media (max-width: 860px) {
   .carousel-flex-layout {

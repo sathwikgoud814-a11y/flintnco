@@ -1,19 +1,8 @@
 /**
- * scrollStory.js — Flint Co. Sticky Editorial Storytelling Engine
+ * scrollStory.js — Flint Co. Editorial Storytelling Engine
  *
- * Requirements:
- * • Keep the section pinned.
- * • Crossfade between illustrations.
- * • Crossfade between headings.
- * • Crossfade between descriptions.
- * • Animate slowly over the entire pinned duration.
- * • Never morph SVG paths.
- * • Never replace SVG markup.
- * • Keep all illustrations stacked absolutely.
- * • Only one illustration visible at a time.
- * • Use autoAlpha instead of display:none.
- * • Timeline progress controls all transitions.
- * • Export as initScrollStory().
+ * Desktop (> 860px): Pinned 400vh sticky crossfade timeline.
+ * Mobile (<= 860px): Clean, continuous unpinned vertical editorial flow with zero extra whitespace, zero duplicate pinning, and no stuck scenes.
  */
 
 export function initScrollStory() {
@@ -28,7 +17,7 @@ export function initScrollStory() {
 
   const stickyStage = wrapper.querySelector('.story-sticky-stage') || wrapper;
 
-  // Clean up existing ScrollTriggers on this section only
+  // Clean up existing ScrollTriggers on this section
   ScrollTrigger.getAll().forEach((st) => {
     if (st.trigger === wrapper || st.trigger === stickyStage) {
       st.kill();
@@ -38,7 +27,27 @@ export function initScrollStory() {
   const scenes = gsap.utils.toArray('.story-scene', wrapper);
   if (scenes.length === 0) return null;
 
-  // 1. Initial State Setup using autoAlpha (no display:none)
+  const isMobile = window.matchMedia('(max-width: 860px)').matches;
+
+  // MOBILE: Unpinned clean vertical flow (eliminates 400vh white space & scene 4 repeating bug)
+  if (isMobile) {
+    gsap.set(wrapper, { clearProps: 'height' });
+    gsap.set(stickyStage, { clearProps: 'all' });
+    scenes.forEach((scene) => {
+      gsap.set(scene, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
+      const illus = scene.querySelector('.story-illus-container');
+      const eyebrow = scene.querySelector('.story-eyebrow');
+      const heading = scene.querySelector('.story-heading');
+      const body = scene.querySelector('.story-body');
+      if (illus) gsap.set(illus, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
+      if (eyebrow) gsap.set(eyebrow, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
+      if (heading) gsap.set(heading, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
+      if (body) gsap.set(body, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
+    });
+    return null;
+  }
+
+  // DESKTOP: Initial State Setup using autoAlpha (no display:none)
   scenes.forEach((scene, i) => {
     const illus = scene.querySelector('.story-illus-container');
     const eyebrow = scene.querySelector('.story-eyebrow');
@@ -60,7 +69,7 @@ export function initScrollStory() {
     }
   });
 
-  // 2. Timeline mapped across scrubbed scroll progress
+  // Timeline mapped across scrubbed scroll progress
   const tl = gsap.timeline({
     defaults: { ease: 'power1.inOut' }
   });
@@ -122,7 +131,7 @@ export function initScrollStory() {
   // Hold final scene
   tl.to({}, { duration: holdDuration });
 
-  // 3. ScrollTrigger Controller mapping scroll progress to timeline
+  // ScrollTrigger Controller
   ScrollTrigger.create({
     trigger: wrapper,
     start: 'top top',
