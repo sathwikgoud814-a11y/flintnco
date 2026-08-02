@@ -97,8 +97,8 @@
           </div>
         </div>
 
-        <!-- Right Side: Floating Browser Mockup -->
-        <div class="hero-visual" id="parallax-container">
+        <!-- Right Side: Floating Browser Mockup (Decorative Visual Wireframe) -->
+        <div class="hero-visual" id="parallax-container" aria-hidden="true">
           <div class="visual-glow"></div>
           <div class="browser-mockup" id="parallax-browser">
             <div class="browser-header">
@@ -124,10 +124,10 @@
                   <span>EST. 2018</span>
                   <span>RESIDENTIAL DESIGN</span>
                 </div>
-                <h2 class="mock-headline">
+                <span class="mock-headline">
                   Materiality & <br>
                   <em>Spatial</em> Order.
-                </h2>
+                </span>
                 <div class="mock-divider"></div>
                 <div class="mock-footer-row">
                   <p class="mock-p">Crafting contemporary architectural spaces focusing on raw textures, minimal
@@ -378,19 +378,19 @@
 
         <!-- 4-Stage Visual Storyteller Selector -->
         <div class="case-story-nav reveal" role="toolbar" aria-label="Case Study Stages">
-          <button class="case-story-btn active" data-stage="problem">
+          <button type="button" class="case-story-btn active" data-stage="problem" aria-label="View Problem Stage">
             <span class="cs-num">I</span>
             <span class="cs-label">Problem</span>
           </button>
-          <button class="case-story-btn" data-stage="strategy">
+          <button type="button" class="case-story-btn" data-stage="strategy" aria-label="View Strategy Stage">
             <span class="cs-num">II</span>
             <span class="cs-label">Strategy</span>
           </button>
-          <button class="case-story-btn" data-stage="execution">
+          <button type="button" class="case-story-btn" data-stage="execution" aria-label="View Execution Stage">
             <span class="cs-num">III</span>
             <span class="cs-label">Execution</span>
           </button>
-          <button class="case-story-btn" data-stage="outcome">
+          <button type="button" class="case-story-btn" data-stage="outcome" aria-label="View Outcome Stage">
             <span class="cs-num">IV</span>
             <span class="cs-label">Outcome</span>
           </button>
@@ -879,10 +879,10 @@
     <!-- Physical Forged Dark CTA Surface & Particle Canvas -->
     <section class="cta-section" id="inquire" aria-labelledby="cta-main-heading">
       <!-- Subtle Moving Film Grain Overlay -->
-      <div class="cta-grain-overlay"></div>
+      <div class="cta-grain-overlay" aria-hidden="true"></div>
 
       <!-- "Forged Flint" Natural Fracture Transition -->
-      <div class="flint-fracture-wrapper" id="flint-fracture">
+      <div class="flint-fracture-wrapper" id="flint-fracture" aria-hidden="true">
         <svg class="flint-fracture-svg" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true">
           <path class="flint-crack-base" d="M 80 20 Q 180 23, 280 17 T 480 22 T 680 18 T 880 21 L 920 20" fill="none"
             stroke="#2A2A2A" stroke-width="1.5" stroke-linecap="round" />
@@ -891,7 +891,7 @@
         </svg>
 
         <!-- 4 Subtle Gold Spark Particles -->
-        <div class="flint-sparks-container">
+        <div class="flint-sparks-container" aria-hidden="true">
           <span class="flint-spark spark-1"></span>
           <span class="flint-spark spark-2"></span>
           <span class="flint-spark spark-3"></span>
@@ -899,7 +899,7 @@
         </div>
 
         <!-- Controlled Fracture Gap (8px - 16px Max Opening) -->
-        <div class="flint-gap-reveal"></div>
+        <div class="flint-gap-reveal" aria-hidden="true"></div>
       </div>
 
       <canvas id="cta-particle-canvas" class="cta-particle-canvas" aria-hidden="true"></canvas>
@@ -914,9 +914,9 @@
           <p class="cta-subtext cta-anim-subtext">
             Every project receives senior attention, strategic thinking, and meticulous execution.
           </p>
-          <a href="mailto:hello@flintco.studio?subject=Project Inquiry" class="btn-primary cta-btn-primary">
+          <a href="mailto:hello@flintco.studio?subject=Project Inquiry" class="btn-primary cta-btn-primary" aria-label="Start Your Project via Email">
             <span class="btn-text">Start Your Project</span>
-            <span class="btn-hover-spark"></span>
+            <span class="btn-hover-spark" aria-hidden="true"></span>
           </a>
           <p class="cta-friction">Discovery call &nbsp;&middot;&nbsp; 30 minutes &nbsp;&middot;&nbsp; No obligation</p>
         </div>
