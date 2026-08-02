@@ -1,8 +1,12 @@
 /**
  * scrollStory.js — Flint Co. Editorial Storytelling Engine
  *
- * Desktop (> 860px): Pinned 400vh sticky crossfade timeline.
- * Mobile (<= 860px): Clean, continuous unpinned vertical editorial flow with zero extra whitespace, zero duplicate pinning, and no stuck scenes.
+ * Desktop (> 860px): Pinned 400vh sticky crossfade timeline with full editorial transitions.
+ * Mobile (<= 860px): Tailored, lightweight mobile storytelling experience:
+ *   • Shorter animation durations (0.5s)
+ *   • Fewer simultaneous animations (1 batched trigger per scene)
+ *   • Preserved narrative and 100% content integrity
+ *   • Zero layout thrashing or pin-spacer height bugs
  */
 
 export function initScrollStory() {
@@ -29,25 +33,44 @@ export function initScrollStory() {
 
   const isMobile = window.matchMedia('(max-width: 860px)').matches;
 
-  // MOBILE: Unpinned clean vertical flow (eliminates 400vh white space & scene 4 repeating bug)
+  // MOBILE: Shorter durations, fewer simultaneous animations, preserved narrative
   if (isMobile) {
     gsap.set(wrapper, { clearProps: 'height' });
     gsap.set(stickyStage, { clearProps: 'all' });
+
     scenes.forEach((scene) => {
-      gsap.set(scene, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
-      const illus = scene.querySelector('.story-illus-container');
-      const eyebrow = scene.querySelector('.story-eyebrow');
-      const heading = scene.querySelector('.story-heading');
-      const body = scene.querySelector('.story-body');
-      if (illus) gsap.set(illus, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
-      if (eyebrow) gsap.set(eyebrow, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
-      if (heading) gsap.set(heading, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
-      if (body) gsap.set(body, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
+      const illusContainer = scene.querySelector('.story-illus-container');
+      const textBlock = scene.querySelector('.story-text-block');
+
+      // Set initial states
+      gsap.set(scene, { opacity: 1, visibility: 'visible' });
+
+      // Unified single trigger per scene with shorter duration (0.5s) & fewer simultaneous tweens
+      const elementsToAnimate = [illusContainer, textBlock].filter(Boolean);
+      gsap.fromTo(
+        elementsToAnimate,
+        { opacity: 0, y: 15 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: scene,
+            start: 'top 85%',
+            once: true
+          },
+          onComplete: () => {
+            gsap.set(elementsToAnimate, { opacity: 1, clearProps: 'transform' });
+          }
+        }
+      );
     });
     return null;
   }
 
-  // DESKTOP: Initial State Setup using autoAlpha (no display:none)
+  // DESKTOP: Initial State Setup using autoAlpha (Pinned 400vh sticky stage)
   scenes.forEach((scene, i) => {
     const illus = scene.querySelector('.story-illus-container');
     const eyebrow = scene.querySelector('.story-eyebrow');
