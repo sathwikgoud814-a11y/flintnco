@@ -1,5 +1,5 @@
 /**
- * scroll-story.js — Flint Co. Sticky Editorial Storytelling Engine
+ * scrollStory.js — Flint Co. Sticky Editorial Storytelling Engine
  *
  * Requirements:
  * • Keep the section pinned.
@@ -18,7 +18,6 @@
 
 export function initScrollStory() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-    console.warn('[scroll-story] GSAP or ScrollTrigger missing.');
     return null;
   }
 
@@ -29,7 +28,7 @@ export function initScrollStory() {
 
   const stickyStage = wrapper.querySelector('.story-sticky-stage') || wrapper;
 
-  // Clean up existing ScrollTriggers on this section
+  // Clean up existing ScrollTriggers on this section only
   ScrollTrigger.getAll().forEach((st) => {
     if (st.trigger === wrapper || st.trigger === stickyStage) {
       st.kill();
@@ -40,7 +39,6 @@ export function initScrollStory() {
   if (scenes.length === 0) return null;
 
   // 1. Initial State Setup using autoAlpha (no display:none)
-  // Ensure only the first scene/illustration is visible at start
   scenes.forEach((scene, i) => {
     const illus = scene.querySelector('.story-illus-container');
     const eyebrow = scene.querySelector('.story-eyebrow');
@@ -105,7 +103,7 @@ export function initScrollStory() {
     }
     tl.to(currScene, { autoAlpha: 0, duration: transDuration }, transTime);
 
-    // Crossfade In Incoming Scene Components (seamlessly overlapping)
+    // Crossfade In Incoming Scene Components
     tl.to(nextScene, { autoAlpha: 1, duration: transDuration }, transTime);
     if (nextIllus) {
       tl.to(nextIllus, { autoAlpha: 1, y: 0, scale: 1, duration: transDuration }, transTime);
@@ -136,13 +134,4 @@ export function initScrollStory() {
   });
 
   return tl;
-}
-
-// Auto-init on page load
-if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initScrollStory);
-  } else {
-    initScrollStory();
-  }
 }
